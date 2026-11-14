@@ -1,6 +1,6 @@
 # Cycling Training Check-In Tracker — structure
 
-Live sheet: https://claude.ai/artifact/42sM8GKTCF16h5WxTN7ATE (private to the owner)
+Build this in Google Sheets, Excel or any spreadsheet. The formulas below work in both. To get coaching on it, paste or upload the latest rows (CSV is fine) into your chat with the coach.
 
 ## Daily (one row per day, starts Mon Nov 16 2026)
 | Col | Field | Notes |
