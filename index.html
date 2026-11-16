@@ -37,7 +37,7 @@
     <canvas id="game" width="800" height="300" tabindex="0" aria-label="Zone 2 Dash game"></canvas>
   </div>
   <button id="play" type="button">Start pedaling</button>
-  <p class="keys"><kbd>Space</kbd> / <kbd>↑</kbd> / tap to jump. Hold for a bigger jump.</p>
+  <p class="keys"><kbd>Space</kbd> / <kbd>↑</kbd> / tap to jump. Hold for a bigger jump. Ground hazards: jump. Flying hazards: stay low.</p>
 
 <script>
 (function () {
@@ -52,7 +52,8 @@
   canvas.width = W * dpr; canvas.height = H * dpr;
   ctx.scale(dpr, dpr);
 
-  var GRAVITY = 1900, JUMP_V = -680, START_SPEED = 300, MAX_SPEED = 720;
+  var GRAVITY = 1900, JUMP_V = -680, START_SPEED = 300, MAX_SPEED = 860;
+  var FLY_HEIGHT = 50; // how far above the road flying hazards sit
   var OBSTACLES = [
     { emoji: "⚔️", label: "merge conflict", w: 34, h: 38 },
     { emoji: "🚀", label: "Friday deploy", w: 36, h: 38 },
@@ -75,8 +76,9 @@
     { max: 380, name: "Z1 Recovery" },
     { max: 480, name: "Z2 Endurance" },
     { max: 580, name: "Z3 Tempo" },
-    { max: 660, name: "Z4 Threshold" },
-    { max: 9999, name: "Z5 Why Are We Doing This" }
+    { max: 680, name: "Z4 Threshold" },
+    { max: 780, name: "Z5 Why Are We Doing This" },
+    { max: 9999, name: "Z6 Send Help" }
   ];
 
   var best = 0;
@@ -86,6 +88,9 @@
   var player, obstacles, coffees, particles, popups;
   var speed, distance, score, time, nextSpawn, nextCoffee, caffeine, deathLine, overAt, holding;
   var lastTs = 0;
+
+  // 0 at the start, 1 after about 90 seconds. Drives hazard mix, spacing and coffee rarity.
+  function difficulty() { return Math.min(1, time / 90); }
 
   function reset() {
     player = { x: 90, y: GROUND, vy: 0, w: 34, h: 44, onGround: true, cut: false, wobble: 0 };
@@ -140,22 +145,34 @@
   }
   function popup(text, x, y, color) { popups.push({ text: text, x: x, y: y, life: 1, color: color || "#fff" }); }
 
+  function pickObstacle() { return OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)]; }
+
   function spawnObstacle() {
-    var t = OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)];
-    obstacles.push({ x: W + 40, w: t.w, h: t.h, emoji: t.emoji, label: t.label, dead: false });
-    // Gap scales with speed so jumps stay fair.
-    var gap = speed * (0.85 + Math.random() * 0.9) + 220;
-    nextSpawn = distance + gap;
-    // Occasionally a two-pack.
-    if (Math.random() < 0.18) {
-      var t2 = OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)];
-      obstacles.push({ x: W + 40 + t.w + 18, w: t2.w, h: t2.h, emoji: t2.emoji, label: t2.label, dead: false });
-      nextSpawn += 120;
+    var d = difficulty();
+    // Spacing shrinks as difficulty rises but never below a fair, jumpable distance.
+    var gap = speed * ((1.0 - 0.25 * d) + Math.random() * (0.8 - 0.3 * d)) + 160;
+
+    // Flying hazards: do NOT jump into these. Appear once the run warms up.
+    if (d > 0.25 && Math.random() < 0.10 + 0.22 * d) {
+      obstacles.push({ x: W + 40, w: 40, h: 32, emoji: "🛸", label: "outage", fly: true, dead: false });
+      nextSpawn = distance + gap + 40;
+      return;
     }
+
+    var count = 1, r = Math.random();
+    if (r < 0.06 + 0.22 * d) count = 2;
+    if (d > 0.4 && r < 0.10 * d) count = 3;
+    var x = W + 40;
+    for (var i = 0; i < count; i++) {
+      var t = pickObstacle();
+      obstacles.push({ x: x, w: t.w, h: t.h, emoji: t.emoji, label: t.label, fly: false, dead: false });
+      x += t.w + 16;
+    }
+    nextSpawn = distance + gap + (count - 1) * 60;
   }
   function spawnCoffee() {
     coffees.push({ x: W + 40, y: GROUND - 80 - Math.random() * 60, r: 18, got: false });
-    nextCoffee = distance + 2400 + Math.random() * 2400;
+    nextCoffee = distance + (2400 + Math.random() * 2400) * (1 + 0.8 * difficulty());
   }
 
   function overlap(ax, ay, aw, ah, bx, by, bw, bh) {
@@ -183,10 +200,11 @@
     obstacles.forEach(function (o) {
       o.x -= speed * dt;
       if (o.dead) return;
-      if (overlap(px, py, pw, ph, o.x + 5, GROUND - o.h + 5, o.w - 10, o.h - 8)) {
+      var base = o.fly ? GROUND - FLY_HEIGHT : GROUND;
+      if (overlap(px, py, pw, ph, o.x + 5, base - o.h + 5, o.w - 10, o.h - 8)) {
         if (caffeine > 0) {
-          o.dead = true; burst(o.x + o.w / 2, GROUND - o.h / 2, 12, "#ffb347");
-          popup("+50 smashed", o.x, GROUND - o.h - 14, "#ffb347"); distance += 500;
+          o.dead = true; burst(o.x + o.w / 2, (o.fly ? GROUND - FLY_HEIGHT : GROUND) - o.h / 2, 12, "#ffb347");
+          popup("+50 smashed", o.x, (o.fly ? GROUND - FLY_HEIGHT : GROUND) - o.h - 14, "#ffb347"); distance += 500;
         } else { gameOver(); }
       }
     });
@@ -277,11 +295,12 @@
   function drawObstacles() {
     ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
     obstacles.forEach(function (o) {
+      var base = o.fly ? GROUND - FLY_HEIGHT : GROUND;
       ctx.font = Math.round(o.h) + "px serif";
-      ctx.fillText(o.emoji, o.x + o.w / 2, GROUND - 2);
+      ctx.fillText(o.emoji, o.x + o.w / 2, base - 2);
       ctx.font = "600 11px ui-monospace, Menlo, monospace";
       ctx.fillStyle = "#1c2330";
-      ctx.fillText(o.label, o.x + o.w / 2, GROUND - o.h - 8);
+      ctx.fillText(o.label, o.x + o.w / 2, base - o.h - 8);
     });
     ctx.textBaseline = "middle"; ctx.font = "34px serif";
     coffees.forEach(function (c) {
