@@ -9,6 +9,7 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
 | `skill/SKILL.md` | Same content packaged as a Claude skill (has the YAML header Claude expects). |
 | `tracker/TRACKER.md` | Layout and formulas for the daily / session / weekly / test check-in spreadsheet the coach uses to adapt your plan. |
 | `workout-sync/` | **intervals.icu + Zwift workout sync.** First-run checklist, a guide to writing workout files, a file validator, an upload helper, and bot prompt templates for pushing your own workouts to Zwift and other connected apps. Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md). |
+| `index.html` | **Zone 2 Dash**, a silly cycling endless-runner game. One self-contained file, no dependencies. Open it in a browser, or play it online once GitHub Pages is on (see below). |
 | `SECURITY.md` | How to report a vulnerability, what is in scope, and what to do if a key or personal data is committed. |
 
 ## Quick start (Grok or any other model)
@@ -50,6 +51,11 @@ The API key lives only in the environment variable `INTERVALS_ICU_API_KEY`; the 
 - Models without web search can't look up new research; the coach is told to say so and flag uncertainty.
 - Sleep, sodium and habit-building sections rest on standard sports-science guidance more than on PubMed trials.
 - HRV and resting-HR flags use your running average, so they are rough in the first 1-2 weeks.
+
+## Zone 2 Dash (just for fun)
+`index.html` at the repo root is a small browser game: ride, jump over developer hazards, grab coffee, and watch your power zone climb. It is a single file with no dependencies, so you can open it locally by double-clicking it.
+
+To play it online, turn on GitHub Pages: **Settings > Pages > Build and deployment > Deploy from a branch**, choose `main` and `/ (root)`, and save. It will then be served at `https://<your-username>.github.io/fitness-coach/`.
 
 ## Security
 Report vulnerabilities privately as described in [`SECURITY.md`](SECURITY.md). Never commit API keys, `state.json` or training logs.

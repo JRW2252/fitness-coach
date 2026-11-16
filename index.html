@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Zone 2 Dash</title>
+<style>
+  :root { color-scheme: light dark; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; display: flex; flex-direction: column; align-items: center;
+    justify-content: center; gap: 14px; padding: 16px;
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    background: #14161c; color: #e9ecf3;
+  }
+  h1 { margin: 0; font-size: 1.5rem; letter-spacing: .02em; }
+  h1 span { color: #ffb347; }
+  .sub { margin: -8px 0 0; opacity: .7; font-size: .9rem; text-align: center; }
+  #wrap { width: min(100%, 860px); }
+  canvas {
+    width: 100%; height: auto; display: block; border-radius: 14px;
+    border: 2px solid #2a2f3b; background: #bfe3ff; touch-action: manipulation; cursor: pointer;
+  }
+  button {
+    font: inherit; font-weight: 600; padding: 10px 22px; border-radius: 999px; border: 0;
+    background: #ffb347; color: #1b1300; cursor: pointer;
+  }
+  button:focus-visible, canvas:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+  .keys { opacity: .65; font-size: .85rem; text-align: center; }
+  kbd { background: #2a2f3b; padding: 1px 7px; border-radius: 5px; border: 1px solid #3a4152; }
+</style>
+</head>
+<body>
+  <h1>🚴 Zone 2 <span>Dash</span></h1>
+  <p class="sub">Keep the watts steady. Dodge the work. Drink the coffee.</p>
+  <div id="wrap">
+    <canvas id="game" width="800" height="300" tabindex="0" aria-label="Zone 2 Dash game"></canvas>
+  </div>
+  <button id="play" type="button">Start pedaling</button>
+  <p class="keys"><kbd>Space</kbd> / <kbd>↑</kbd> / tap to jump. Hold for a bigger jump.</p>
+
+<script>
+(function () {
+  "use strict";
+  var canvas = document.getElementById("game");
+  var ctx = canvas.getContext("2d");
+  var playBtn = document.getElementById("play");
+
+  // Crisp rendering on high-DPI screens.
+  var W = 800, H = 300, GROUND = 244;
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  canvas.width = W * dpr; canvas.height = H * dpr;
+  ctx.scale(dpr, dpr);
+
+  var GRAVITY = 1900, JUMP_V = -680, START_SPEED = 300, MAX_SPEED = 720;
+  var OBSTACLES = [
+    { emoji: "⚔️", label: "merge conflict", w: 34, h: 38 },
+    { emoji: "🚀", label: "Friday deploy", w: 36, h: 38 },
+    { emoji: "📅", label: "quick sync", w: 34, h: 52 },
+    { emoji: "🚨", label: "prod alert", w: 34, h: 40 },
+    { emoji: "🛞", label: "flat tire", w: 40, h: 30 },
+    { emoji: "📧", label: "reply-all", w: 34, h: 34 }
+  ];
+  var DEATH_LINES = [
+    "git blame says: you.",
+    "It works on my machine.",
+    "Have you tried turning it off and on?",
+    "That's a Z6 problem, not a you problem.",
+    "Rolled back. Nobody saw anything.",
+    "Post-mortem scheduled for 8am.",
+    "The fan was never big enough.",
+    "Skill issue? Maybe. Gravity? Definitely."
+  ];
+  var ZONES = [
+    { max: 380, name: "Z1 Recovery" },
+    { max: 480, name: "Z2 Endurance" },
+    { max: 580, name: "Z3 Tempo" },
+    { max: 660, name: "Z4 Threshold" },
+    { max: 9999, name: "Z5 Why Are We Doing This" }
+  ];
+
+  var best = 0;
+  try { best = parseInt(localStorage.getItem("zone2dash-best") || "0", 10) || 0; } catch (e) {}
+
+  var state = "ready";          // ready | playing | over
+  var player, obstacles, coffees, particles, popups;
+  var speed, distance, score, time, nextSpawn, nextCoffee, caffeine, deathLine, overAt, holding;
+  var lastTs = 0;
+
+  function reset() {
+    player = { x: 90, y: GROUND, vy: 0, w: 34, h: 44, onGround: true, cut: false, wobble: 0 };
+    obstacles = []; coffees = []; particles = []; popups = [];
+    speed = START_SPEED; distance = 0; score = 0; time = 0;
+    nextSpawn = 700; nextCoffee = 2200 + Math.random() * 1500;
+    caffeine = 0; holding = false;
+  }
+  reset();
+
+  function startGame() {
+    reset(); state = "playing"; playBtn.textContent = "Pedaling…";
+    canvas.focus({ preventScroll: true });
+  }
+
+  function jumpPress() {
+    if (state === "ready") { startGame(); }
+    else if (state === "over") {
+      if (performance.now() - overAt > 450) { startGame(); }
+      return;
+    }
+    holding = true;
+    if (player.onGround) {
+      player.vy = JUMP_V; player.onGround = false; player.cut = false;
+      burst(player.x + 8, GROUND, 5, "#d9c9a3");
+    }
+  }
+  function jumpRelease() {
+    holding = false;
+    if (!player.onGround && player.vy < -220 && !player.cut) { player.vy *= 0.45; player.cut = true; }
+  }
+
+  document.addEventListener("keydown", function (e) {
+    if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
+      e.preventDefault(); if (!e.repeat) jumpPress();
+    }
+  });
+  document.addEventListener("keyup", function (e) {
+    if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") jumpRelease();
+  });
+  canvas.addEventListener("pointerdown", function (e) { e.preventDefault(); jumpPress(); });
+  window.addEventListener("pointerup", jumpRelease);
+  playBtn.addEventListener("click", function () { if (state !== "playing") startGame(); });
+
+  function burst(x, y, n, color) {
+    for (var i = 0; i < n; i++) {
+      particles.push({
+        x: x, y: y, vx: (Math.random() - 0.5) * 220, vy: -Math.random() * 200 - 20,
+        life: 0.5 + Math.random() * 0.4, color: color
+      });
+    }
+  }
+  function popup(text, x, y, color) { popups.push({ text: text, x: x, y: y, life: 1, color: color || "#fff" }); }
+
+  function spawnObstacle() {
+    var t = OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)];
+    obstacles.push({ x: W + 40, w: t.w, h: t.h, emoji: t.emoji, label: t.label, dead: false });
+    // Gap scales with speed so jumps stay fair.
+    var gap = speed * (0.85 + Math.random() * 0.9) + 220;
+    nextSpawn = distance + gap;
+    // Occasionally a two-pack.
+    if (Math.random() < 0.18) {
+      var t2 = OBSTACLES[Math.floor(Math.random() * OBSTACLES.length)];
+      obstacles.push({ x: W + 40 + t.w + 18, w: t2.w, h: t2.h, emoji: t2.emoji, label: t2.label, dead: false });
+      nextSpawn += 120;
+    }
+  }
+  function spawnCoffee() {
+    coffees.push({ x: W + 40, y: GROUND - 80 - Math.random() * 60, r: 18, got: false });
+    nextCoffee = distance + 2400 + Math.random() * 2400;
+  }
+
+  function overlap(ax, ay, aw, ah, bx, by, bw, bh) {
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
+  }
+
+  function update(dt) {
+    time += dt;
+    speed = Math.min(MAX_SPEED, START_SPEED + time * 9);
+    distance += speed * dt;
+    score = Math.floor(distance / 10);
+    if (caffeine > 0) caffeine = Math.max(0, caffeine - dt);
+
+    // Player physics.
+    player.vy += GRAVITY * dt * (holding && player.vy < 0 ? 0.82 : 1);
+    player.y += player.vy * dt;
+    if (player.y >= GROUND) { player.y = GROUND; player.vy = 0; player.onGround = true; }
+    player.wobble += dt * (player.onGround ? speed / 40 : 2);
+
+    if (distance >= nextSpawn) spawnObstacle();
+    if (distance >= nextCoffee) spawnCoffee();
+
+    var px = player.x + 6, py = player.y - player.h + 6, pw = player.w - 12, ph = player.h - 8;
+
+    obstacles.forEach(function (o) {
+      o.x -= speed * dt;
+      if (o.dead) return;
+      if (overlap(px, py, pw, ph, o.x + 5, GROUND - o.h + 5, o.w - 10, o.h - 8)) {
+        if (caffeine > 0) {
+          o.dead = true; burst(o.x + o.w / 2, GROUND - o.h / 2, 12, "#ffb347");
+          popup("+50 smashed", o.x, GROUND - o.h - 14, "#ffb347"); distance += 500;
+        } else { gameOver(); }
+      }
+    });
+    obstacles = obstacles.filter(function (o) { return o.x > -80 && !o.dead; });
+
+    coffees.forEach(function (c) {
+      c.x -= speed * dt;
+      if (!c.got && overlap(px, py, pw, ph, c.x - c.r, c.y - c.r, c.r * 2, c.r * 2)) {
+        c.got = true; caffeine = 5; burst(c.x, c.y, 14, "#8b5a2b");
+        popup("CAFFEINE MODE!", c.x - 40, c.y - 24, "#8b5a2b");
+      }
+    });
+    coffees = coffees.filter(function (c) { return c.x > -60 && !c.got; });
+
+    particles.forEach(function (p) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 700 * dt; p.life -= dt; });
+    particles = particles.filter(function (p) { return p.life > 0; });
+    popups.forEach(function (p) { p.y -= 28 * dt; p.life -= dt; });
+    popups = popups.filter(function (p) { return p.life > 0; });
+  }
+
+  function gameOver() {
+    state = "over"; overAt = performance.now();
+    deathLine = DEATH_LINES[Math.floor(Math.random() * DEATH_LINES.length)];
+    if (score > best) {
+      best = score;
+      try { localStorage.setItem("zone2dash-best", String(best)); } catch (e) {}
+    }
+    playBtn.textContent = "Try again";
+    burst(player.x + 16, player.y - 20, 18, "#ff6b6b");
+  }
+
+  function zoneFor(s) { for (var i = 0; i < ZONES.length; i++) if (s < ZONES[i].max) return ZONES[i].name; return ""; }
+
+  // ---------- drawing ----------
+  function drawBackground() {
+    var g = ctx.createLinearGradient(0, 0, 0, H);
+    var hot = caffeine > 0;
+    g.addColorStop(0, hot ? "#ffd9a0" : "#9fd3ff");
+    g.addColorStop(1, hot ? "#fff0d6" : "#e6f4ff");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+
+    ctx.font = "44px serif"; ctx.textBaseline = "middle"; ctx.textAlign = "center";
+    ctx.fillText("☀️", 700, 52);
+
+    // Parallax hills.
+    function hills(offset, base, amp, color, period) {
+      ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, H);
+      for (var x = 0; x <= W; x += 10) {
+        ctx.lineTo(x, base - Math.sin((x + offset) / period) * amp - Math.sin((x + offset) / (period * 0.43)) * amp * 0.35);
+      }
+      ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+    }
+    hills(distance * 0.12, 205, 26, "#a8d49a", 120);
+    hills(distance * 0.28, 232, 18, "#7fbf6e", 80);
+
+    // Clouds.
+    ctx.font = "34px serif";
+    for (var i = 0; i < 4; i++) {
+      var cx = ((i * 260 - distance * 0.06) % (W + 120) + (W + 120)) % (W + 120) - 60;
+      ctx.globalAlpha = 0.85; ctx.fillText("☁️", cx, 40 + (i % 2) * 34); ctx.globalAlpha = 1;
+    }
+
+    // Road.
+    ctx.fillStyle = "#4a4f5c"; ctx.fillRect(0, GROUND, W, H - GROUND);
+    ctx.fillStyle = "#f5f5f5";
+    var off = (distance % 60);
+    for (var x = -60; x < W + 60; x += 60) ctx.fillRect(x - off, GROUND + 26, 30, 4);
+  }
+
+  function drawPlayer() {
+    var bob = player.onGround ? Math.sin(player.wobble) * 1.5 : 0;
+    ctx.save();
+    ctx.translate(player.x + player.w / 2, player.y - player.h / 2 + bob);
+    ctx.rotate(player.onGround ? 0 : Math.max(-0.35, Math.min(0.35, player.vy / 2200)));
+    if (caffeine > 0) {
+      ctx.shadowColor = "#ffb347"; ctx.shadowBlur = 20 + Math.sin(time * 18) * 6;
+    }
+    ctx.font = "44px serif"; ctx.textAlign = "center"; ctx.textBaseline = "middle";
+    ctx.scale(-1, 1); // face right
+    ctx.fillText("🚴", 0, 0);
+    ctx.restore();
+    if (caffeine > 0) {
+      ctx.fillStyle = "rgba(0,0,0,.25)"; ctx.fillRect(player.x - 6, player.y + 8, 46, 5);
+      ctx.fillStyle = "#ffb347"; ctx.fillRect(player.x - 6, player.y + 8, 46 * (caffeine / 5), 5);
+    }
+  }
+
+  function drawObstacles() {
+    ctx.textAlign = "center"; ctx.textBaseline = "alphabetic";
+    obstacles.forEach(function (o) {
+      ctx.font = Math.round(o.h) + "px serif";
+      ctx.fillText(o.emoji, o.x + o.w / 2, GROUND - 2);
+      ctx.font = "600 11px ui-monospace, Menlo, monospace";
+      ctx.fillStyle = "#1c2330";
+      ctx.fillText(o.label, o.x + o.w / 2, GROUND - o.h - 8);
+    });
+    ctx.textBaseline = "middle"; ctx.font = "34px serif";
+    coffees.forEach(function (c) {
+      ctx.fillText("☕", c.x, c.y + Math.sin(time * 5 + c.x * 0.02) * 4);
+    });
+  }
+
+  function drawParticles() {
+    particles.forEach(function (p) {
+      ctx.globalAlpha = Math.max(0, p.life * 1.6); ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, 4, 4);
+    });
+    ctx.globalAlpha = 1;
+    ctx.font = "700 15px system-ui, sans-serif"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    popups.forEach(function (p) {
+      ctx.globalAlpha = Math.max(0, p.life); ctx.fillStyle = p.color; ctx.fillText(p.text, p.x, p.y);
+    });
+    ctx.globalAlpha = 1;
+  }
+
+  function drawHUD() {
+    ctx.fillStyle = "rgba(20,22,28,.78)";
+    ctx.fillRect(12, 12, 250, 62);
+    ctx.fillStyle = "#fff"; ctx.textAlign = "left"; ctx.textBaseline = "middle";
+    ctx.font = "700 20px ui-monospace, Menlo, monospace";
+    ctx.fillText(String(score).padStart(5, "0") + " m", 24, 32);
+    ctx.font = "13px system-ui, sans-serif"; ctx.fillStyle = "#ffcf8a";
+    ctx.fillText(Math.round(110 + speed * 0.35) + " W  ·  " + zoneFor(speed), 24, 57);
+    ctx.textAlign = "right"; ctx.fillStyle = "rgba(20,22,28,.78)";
+    ctx.fillRect(W - 142, 12, 130, 30);
+    ctx.fillStyle = "#fff"; ctx.font = "13px ui-monospace, Menlo, monospace";
+    ctx.fillText("BEST " + String(best).padStart(5, "0"), W - 24, 28);
+  }
+
+  function banner(title, line1, line2) {
+    ctx.fillStyle = "rgba(20,22,28,.72)"; ctx.fillRect(0, 0, W, H);
+    ctx.textAlign = "center"; ctx.textBaseline = "middle"; ctx.fillStyle = "#fff";
+    ctx.font = "800 38px system-ui, sans-serif"; ctx.fillText(title, W / 2, 104);
+    ctx.font = "18px system-ui, sans-serif"; ctx.fillStyle = "#ffcf8a"; ctx.fillText(line1, W / 2, 150);
+    ctx.fillStyle = "#d6dbe8"; ctx.font = "15px system-ui, sans-serif"; ctx.fillText(line2, W / 2, 186);
+  }
+
+  function render() {
+    drawBackground(); drawObstacles(); drawPlayer(); drawParticles(); drawHUD();
+    if (state === "ready") banner("ZONE 2 DASH", "Stay smooth. Dodge the work. Grab the coffee.", "Press Space or tap to start");
+    if (state === "over") banner("DNF", deathLine, "You rode " + score + " m" + (score && score >= best ? "  ·  new best!" : "") + "  ·  Space or tap to retry");
+  }
+
+  function frame(ts) {
+    var dt = Math.min(0.033, (ts - lastTs) / 1000 || 0.016); lastTs = ts;
+    if (state === "playing") update(dt);
+    else {
+      time += dt; // keep particles/animation alive on banners
+      particles.forEach(function (p) { p.x += p.vx * dt; p.y += p.vy * dt; p.vy += 700 * dt; p.life -= dt; });
+      particles = particles.filter(function (p) { return p.life > 0; });
+    }
+    render();
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
