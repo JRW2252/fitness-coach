@@ -180,7 +180,11 @@ def main() -> None:
     p_up.add_argument("--prefix", default=DEFAULT_PREFIX, help="external_id prefix")
     p_up.add_argument("--name", default=None, help="Optional event name")
     p_up.add_argument("--type", default="VirtualRide", dest="event_type")
-    p_up.add_argument("--outdoor", action="store_true", help="Set indoor=false")
+    p_up.add_argument(
+        "--outdoor",
+        action="store_true",
+        help="Set indoor=false. Zwift will not show the workout",
+    )
 
     p_la = sub.add_parser("list-activities", help="List activities in a date range")
     _add_date_args(p_la, oldest=True, newest=True)
@@ -206,6 +210,12 @@ def main() -> None:
     )
 
     args = parser.parse_args()
+    if getattr(args, "outdoor", False):
+        print(
+            "Warning: --outdoor sets indoor=false. Zwift only accepts planned "
+            "workouts flagged indoor, so this event will not show up in Zwift.",
+            file=sys.stderr,
+        )
     require_key()
 
     if args.cmd == "upsert":

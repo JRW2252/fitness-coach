@@ -29,7 +29,7 @@ Plans adapt only as well as the feedback they get. Build the tracker from `track
 
 A setup guide for pushing **your own** workouts through [intervals.icu](https://intervals.icu) so they show up in [Zwift](https://www.zwift.com) (Workouts > Custom > Intervals.icu) and, where intervals.icu supports it, on other connected apps. There is no pre-built plan in this repo.
 
-See [`workout-sync/README.md`](workout-sync/README.md) for the account, API key (`INTERVALS_ICU_API_KEY`), Zwift connection, a 20-minute sync-test file, and bot prompt templates. Adjustment rules are in [`workout-sync/adjustment_rules.md`](workout-sync/adjustment_rules.md). The helper is [`workout-sync/scripts/intervals_icu.py`](workout-sync/scripts/intervals_icu.py).
+Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md) (account, API key, a test upload, and how to schedule the bot). The reference is [`workout-sync/README.md`](workout-sync/README.md). Writing a workout file is [`workout-sync/authoring_workouts.md`](workout-sync/authoring_workouts.md). Adjustment rules are in [`workout-sync/adjustment_rules.md`](workout-sync/adjustment_rules.md). The helper is [`workout-sync/scripts/intervals_icu.py`](workout-sync/scripts/intervals_icu.py).
 
 This is an implementation of the check-in loop above, not a replacement for it. You can run the loop with an AI assistant or by hand. Keep API keys, athlete ids, and personal logs out of the public repo.
 

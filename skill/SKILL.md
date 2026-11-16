@@ -155,7 +155,7 @@ Ride data: if a Strava/TrainingPeaks/intervals.icu/Garmin connector or export is
 
 ## intervals.icu + Zwift delivery
 
-To put the athlete's own plan on Zwift, or on another app intervals.icu can push workouts to, follow [`workout-sync/README.md`](../workout-sync/README.md). That folder is a setup guide and bot templates. It does not include a training plan. The athlete supplies the workout files.
+To put the athlete's own plan on Zwift, or on another app intervals.icu can push workouts to, start at [`workout-sync/QUICKSTART.md`](../workout-sync/QUICKSTART.md). The reference is [`workout-sync/README.md`](../workout-sync/README.md). Write workout files with [`workout-sync/authoring_workouts.md`](../workout-sync/authoring_workouts.md). That folder is a setup guide and bot templates. It does not include a training plan. The athlete supplies the workout files.
 
 Use [`workout-sync/scripts/intervals_icu.py`](../workout-sync/scripts/intervals_icu.py) to upsert, list, delete, and write RPE back. The script reads the API key only from the environment variable `INTERVALS_ICU_API_KEY` and does not print it or put it on a command line. Athlete id `0` means the athlete who owns the key. Keep API keys, athlete ids, and personal logs out of the repo. Morning, check-in, and week-ahead prompts are in [`workout-sync/routines/`](../workout-sync/routines/).
 

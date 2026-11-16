@@ -45,13 +45,16 @@ Use a recovery week every 3-4 weeks when their plan calls for one (about 40-50% 
    `python {{HELPER}} upsert --date TODAY --zwo PATH --prefix {{EXTERNAL_ID_PREFIX}}`
 
    Use `external_id {{EXTERNAL_ID_PREFIX}}-YYYY-MM-DD` so a re-run replaces the same event.
-6. If the upload fails and a local Zwift workouts folder is configured, copy the file there and say that this is a backup.
-7. If intervals.icu FTP and `{{FTP_WATTS}}` do not match the app that will run the workout, say so. Targets will be wrong until they match.
+6. Optional Zwift-only extra: if the upload fails and a local Zwift workouts folder is configured, copy the file into `Documents/Zwift/Workouts/<ZWIFT_USER_ID>/` and say that this is a backup. Skip this when the athlete is not using Zwift. Do not commit that folder id.
+7. Check that FTP matches in intervals.icu and in the app that will run the workout (`{{FTP_WATTS}}` until they retest). Say so if it does not.
 8. On a ride planned for more than 90 minutes, include the carb target from the coach file.
+9. Do not pass `--outdoor` when the workout should appear in Zwift. Zwift only accepts planned workouts flagged indoor.
 
 ### The message
 
-Tell them, briefly: today's session and watt targets, any change and why, where to find it (for Zwift: Workouts > Custom > Intervals.icu; restart if it is missing; only about the next 7 days sync), an optional RoboPacer on endurance days only, and a fueling cue when the ride is long.
+Tell them, briefly: today's session and watt targets, any change and why, where to find it (for Zwift: Workouts > Custom > Intervals.icu; restart if it is missing; only about the next 7 days sync), and a fueling cue when the ride is long.
+
+Optional Zwift-only extra: on an endurance day in Zwift, you may name a current RoboPacer and still upload a backup `.zwo`. Do not use a bot for sweet spot, threshold, VO2, or a test. Skip this when they are not riding Zwift.
 
 End with this check-in, including on rest days:
 

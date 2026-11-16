@@ -71,7 +71,7 @@ Follow §7. Heavy lower-body strength goes on a hard-ride day, after the ride or
 
 - Changed session: upsert the new file with the same `external_id` (`workout-YYYY-MM-DD` unless `state.json` uses another prefix) so the event is replaced.
 - Rest day or planned day off: delete that date's event.
-- Endurance day on Zwift: a RoboPacer is optional. Still upload a backup file. No bot on sweet spot, threshold, VO2, openers, or a test. Structured intervals stay on the file, because those targets need ERG.
+- Optional Zwift-only extra: on an endurance day in Zwift, a RoboPacer is optional. Still upload a backup file. No bot on sweet spot, threshold, VO2, openers, or a test. Structured intervals stay on the file, because those targets need ERG. Skip this when the athlete is not riding Zwift.
 - On rides over 90 minutes, cue the fueling targets in §15.
 - Write `icu_rpe` as a whole number. `feel` is 1-5 with 1 = strong and 5 = weak, the opposite of the readiness legs/energy scale.
 - Ride review shape: §22.

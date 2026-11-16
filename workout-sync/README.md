@@ -1,6 +1,8 @@
 # Sync your own workouts with intervals.icu
 
-This folder is a setup guide and a set of bot templates. It does not contain a training plan. You bring your own plan and workout files. The helper pushes those files to [intervals.icu](https://intervals.icu), which can forward planned workouts to Zwift and to other apps it is connected to.
+Start with [`QUICKSTART.md`](QUICKSTART.md) if you are setting this up for the first time. This file is the reference behind that checklist.
+
+This folder is a setup guide and a set of bot templates. It does not contain a training plan. You bring your own plan, or you write workout files with [`authoring_workouts.md`](authoring_workouts.md). The helper pushes those files to [intervals.icu](https://intervals.icu), which can forward planned workouts to Zwift and to other apps it is connected to.
 
 General coaching rules live in [`generic/cycling-coach.md`](../generic/cycling-coach.md). How to turn today's plan into the file you upload is in [`adjustment_rules.md`](adjustment_rules.md).
 
@@ -12,6 +14,8 @@ Coaching guidance, not medical advice. Stop and see a physician for red-flag sym
 
 | Path | What it is |
 |---|---|
+| `QUICKSTART.md` | First-run checklist: account, key, test upload, bot |
+| `authoring_workouts.md` | How to write a `.zwo` or an intervals.icu text workout |
 | `examples/test_sync_20min.zwo` | One short easy ride, power as a fraction of FTP, for a first sync test |
 | `scripts/intervals_icu.py` | Upsert, list, delete, and write RPE back. Reads the API key from the environment |
 | `adjustment_rules.md` | Generic rules for easing or swapping a session, with pointers into the coach file |
@@ -107,32 +111,32 @@ EOF
 ### 3. Connect Zwift
 
 1. In intervals.icu open Settings, then Connections, and connect Zwift. Turn on upload of planned workouts. You can limit which activity types are downloaded and which workouts are uploaded.
-2. Set FTP in Zwift to the same number as intervals.icu. Planned workouts are a percent of FTP, so a mismatch prescribes the wrong watts. Zwift does not copy the FTP across for you.
+2. Check that FTP matches in intervals.icu and Zwift. Planned workouts are a percent of FTP, so a mismatch prescribes the wrong watts.
 3. After an upsert, open Zwift and look under **Workouts > Custom > Intervals.icu**. Zwift also shows today's workout on the home screen. Only about the **next 7 days** of planned workouts are uploaded. Restart Zwift if a file you just uploaded does not appear.
 
 Source: the intervals.icu forum post [Intervals.icu and Zwift integration is live](https://forum.intervals.icu/t/intervals-icu-and-zwift-integration-is-live/81764/).
 
-On an endurance day you can ride with a Zwift RoboPacer instead of ERG and still upload a backup `.zwo`. Pick a current bot near your target W/kg from Zwift's roster and check that day's route on [Zwift Insider](https://zwiftinsider.com/robopacer-schedule/). The roster changes, so do not hard-code bot names into a committed file. Sit in the draft, stop at the planned duration, and do not use a bot for sweet spot, threshold, VO2, or a test.
+Optional Zwift-only extra: on an endurance day you can ride with a Zwift RoboPacer instead of ERG and still upload a backup `.zwo`. Pick a current bot near your target W/kg from Zwift's roster and check that day's route on [Zwift Insider](https://zwiftinsider.com/robopacer-schedule/). The roster changes, so do not hard-code bot names into a committed file. Sit in the draft, stop at the planned duration, and do not use a bot for sweet spot, threshold, VO2, or a test. Skip this if you are not riding in Zwift.
 
 ### 4. Other connections
 
 intervals.icu's own site and forum document direct connections for activities and, for some apps, planned workouts. The list changes. Check [Settings > Connections](https://intervals.icu) and the [integrations page](https://www.intervals.icu/integrations/) before you rely on a name below.
 
-Confirmed from intervals.icu itself:
+Confirmed from intervals.icu forum posts (the developer account @david, unless noted). The [integrations page](https://www.intervals.icu/integrations/) did not render a text list of products when checked, so the table is from the forum. Open Settings > Connections and confirm the toggle on your account before you rely on it.
 
-| Connection | What is documented | Where |
+| Connection | What is confirmed | Where |
 |---|---|---|
-| Zwift | Activities in, planned workouts out for about the next 7 days | [Forum announcement](https://forum.intervals.icu/t/intervals-icu-and-zwift-integration-is-live/81764/) |
-| Garmin | Activities in. The product page also says planned workouts can be uploaded to Garmin | [FAQ](https://forum.intervals.icu/t/intervals-icu-faq/123707/), [intervals.icu](https://intervals.icu/) workout-builder copy |
-| Suunto | Planned workouts can be uploaded to Suunto devices | [intervals.icu](https://intervals.icu/) workout-builder copy |
-| Wahoo | Activities in (the FAQ discusses Wahoo as a download source). Look in that connection's settings before assuming planned workouts upload | [FAQ](https://forum.intervals.icu/t/intervals-icu-faq/123707/) |
-| Strava | Activities in. Full history import is limited unless you are a supporter. Strava is a poor primary source if a device connection already sends the same rides | [FAQ](https://forum.intervals.icu/t/intervals-icu-faq/123707/) |
+| Zwift | Activities in. Planned workouts out for the next week, and only if the workout is flagged indoor | [Announcement](https://forum.intervals.icu/t/intervals-icu-and-zwift-integration-is-live/81764/), [missing in Zwift](https://forum.intervals.icu/t/planned-workouts-not-showing-up-in-zwift/133153) |
+| Garmin | Planned workouts for the next 7 days, refreshed daily | [Exporting to Garmin Connect](https://forum.intervals.icu/t/dummys-guide-to-exporting-to-garmin-connect/16880) (@david: uploads the next 7 days) |
+| Wahoo | Planned workouts for the next 7 days to Wahoo Cloud, then the ELEMNT app. The Wahoo API was described as beta; a missing `workouts_write` scope means re-authorize | [Upload planned workouts to Wahoo](https://forum.intervals.icu/t/upload-planned-workouts-to-wahoo/65949) |
+| Coros | Activities and wellness in. Planned workouts for the next week if you enable upload. You may need to add "Intervals.icu Training Plan" in the Coros app | [Coros support added](https://forum.intervals.icu/t/coros-support-added/37006) |
+| MyWhoosh | Planned workouts sync from intervals.icu to MyWhoosh. A forum reply says the same 7-day window applies there | [MyWhoosh integration](https://forum.intervals.icu/t/mywhoosh-integration/79532) |
+| Strava | Activities in. Full history import is limited unless you are a supporter. Not documented as a planned-workout destination. Turn the download off when a device connection already sends the same rides | [FAQ](https://forum.intervals.icu/t/intervals-icu-faq/123707/) |
+| TrainingPeaks | No direct planned-workout connection showed up in the threads above. Check Settings before assuming one | |
 
-Settings shows more connections than the table (watches, indoor apps, wellness). Open the current screen and the [integrations page](https://www.intervals.icu/integrations/). Do not assume each one accepts planned workouts.
+A forum reply on the Zwift thread says the next-7-days export is the same for Garmin, Wahoo, Coros, and the other workout connections ([missing in Zwift](https://forum.intervals.icu/t/planned-workouts-not-showing-up-in-zwift/133153)). @david has said the same 7-day rule separately for Garmin and for Wahoo.
 
 If two connections import the same ride, you can get duplicates. The FAQ's advice is to keep one primary source per device and turn off the extra download (often Strava) when the device connection is already working.
-
-This guide does not document a direct TrainingPeaks connection. If you use TrainingPeaks, check the current intervals.icu connections screen rather than assuming a sync exists.
 
 ### 5. Local files for the bot
 
@@ -165,7 +169,7 @@ Then:
 2. In Zwift, open **Workouts > Custom > Intervals.icu** (restart Zwift if needed). The date has to fall inside the next week of uploads.
 3. Delete it when you are done: `python scripts/intervals_icu.py delete-by-date --date YYYY-MM-DD`.
 
-The upsert posts one workout to `POST /api/v1/athlete/0/events/bulk?upsert=true` with `category: WORKOUT`, `type: VirtualRide`, `indoor: true`, `filename`, `file_contents` (the raw `.zwo` XML), and `external_id`. Notes: [uploading planned workouts](https://forum.intervals.icu/t/uploading-planned-workouts-to-intervals-icu/63624) and [API access](https://forum.intervals.icu/t/api-access-to-intervals-icu/609). For an outdoor ride, add `--outdoor` or pass `--type Ride`.
+The upsert posts one workout to `POST /api/v1/athlete/0/events/bulk?upsert=true` with `category: WORKOUT`, `type: VirtualRide`, `indoor: true`, `filename`, `file_contents` (the raw `.zwo` XML), and `external_id`. Notes: [uploading planned workouts](https://forum.intervals.icu/t/uploading-planned-workouts-to-intervals-icu/63624) and [API access](https://forum.intervals.icu/t/api-access-to-intervals-icu/609). How to write the file is [`authoring_workouts.md`](authoring_workouts.md). `--outdoor` sets `indoor` false and prints a warning: Zwift will not show that workout.
 
 ### 7. Point a bot at your plan
 
@@ -196,7 +200,7 @@ python scripts/intervals_icu.py delete-event --event-id EVENT_ID
 
 ## Fallback: a local Zwift folder
 
-If the API is down, copy today's `.zwo` into:
+Optional Zwift-only extra. Skip it if you are not using Zwift. If the API is down, copy today's `.zwo` into:
 
 ```
 .../Documents/Zwift/Workouts/<ZWIFT_USER_ID>/
@@ -210,13 +214,13 @@ That numeric folder name is the Zwift user id on that computer. Do not commit it
 |---|---|
 | HTTP 403 from Python | Cloudflare blocks urllib's default User-Agent (error 1010). Use this helper, which sets a User-Agent. Do not pass the key with curl `-u`. |
 | HTTP 401 | The key was rejected. Create a new one under Developer settings and re-export the env var. Do not log the key. |
-| Workout missing in Zwift | Zwift connected, planned-workout upload on, the date is inside the next week, the event exists on the intervals.icu calendar, then restart Zwift. |
+| Workout missing in Zwift | Zwift connected, planned-workout upload on, the date is inside the next 7 days, the event is flagged indoor, then restart Zwift. `--outdoor` sets indoor to false and Zwift will not accept the workout. One report also needed the sport set to Ride rather than Virtual Ride |
 | Wrong watts | FTP in Zwift and intervals.icu do not match. Align them. Do not change FTP off a few easy rides. |
 | Duplicate calendar events | Upsert again with the same `external_id` (`workout-YYYY-MM-DD` unless you changed the prefix). |
 | Duplicate activities | Two connections are importing the same ride. Keep one primary source. See the [FAQ](https://forum.intervals.icu/t/intervals-icu-faq/123707/). |
 | `icu_rpe` rejected | Send a whole number. Store a half (4.5) in the CSV if you want, and write 4 or 5 to the API. |
 | `feel` looks backwards | intervals.icu: 1 = strong, 5 = weak. |
-| Workout not on a watch or head unit | That connection may import activities but not accept planned workouts. Check its settings. Garmin and Suunto are documented for workout upload; do not assume every connection is. |
+| Workout not on a watch or head unit | Confirm that connection's "upload planned workouts" toggle. Garmin, Wahoo, and Coros are documented for a 7-day upload. Strava is not a workout destination. Check Settings either way. |
 | Two cron times failed to register | Put both hours in one expression (`30 10,17 * * *`). |
 
 ## Privacy
