@@ -9,7 +9,7 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
 | `skill/SKILL.md` | Same content packaged as a Claude skill (has the YAML header Claude expects). |
 | `tracker/TRACKER.md` | Layout and formulas for the daily / session / weekly / test check-in spreadsheet the coach uses to adapt your plan. |
 | `workout-sync/` | **intervals.icu + Zwift workout sync.** First-run checklist, a guide to writing workout files, a file validator, an upload helper, and bot prompt templates for pushing your own workouts to Zwift and other connected apps. Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md). |
-| `index.html` | **Zone 2 Dash**, a silly cycling endless-runner game. One self-contained file, no dependencies. Open it in a browser, or play it online once GitHub Pages is on (see below). |
+| `index.html` | **Zone 2 Dash**, a silly cycling endless-runner game. One self-contained file, no dependencies. [Play it online](https://jrw2252.github.io/fitness-coach/) or open the file in a browser. |
 | `SECURITY.md` | How to report a vulnerability, what is in scope, and what to do if a key or personal data is committed. |
 
 ## Quick start (Grok or any other model)
@@ -53,9 +53,11 @@ The API key lives only in the environment variable `INTERVALS_ICU_API_KEY`; the 
 - HRV and resting-HR flags use your running average, so they are rough in the first 1-2 weeks.
 
 ## Zone 2 Dash (just for fun)
-`index.html` at the repo root is a small browser game: ride, jump over developer hazards, grab coffee, and watch your power zone climb. It is a single file with no dependencies, so you can open it locally by double-clicking it.
+**[Play it here: jrw2252.github.io/fitness-coach](https://jrw2252.github.io/fitness-coach/)**
 
-To play it online, turn on GitHub Pages: **Settings > Pages > Build and deployment > Deploy from a branch**, choose `main` and `/ (root)`, and save. It will then be served at `https://<your-username>.github.io/fitness-coach/`.
+`index.html` at the repo root is a small browser game: ride, jump over developer hazards, grab coffee for a few seconds of smashing everything, and watch your power zone climb from Z1 to Z6. It speeds up and gets denser the longer you last, and from about 25 seconds in, flying hazards appear that you must stay under, not jump. It is a single file with no dependencies, so you can also open it locally by double-clicking it.
+
+Controls: Space, up arrow or tap to jump (hold for a higher jump). Your best score is saved in your browser.
 
 ## Security
 Report vulnerabilities privately as described in [`SECURITY.md`](SECURITY.md). Never commit API keys, `state.json` or training logs.
