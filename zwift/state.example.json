@@ -1,0 +1,72 @@
+{
+  "plan_start": "YYYY-MM-DD",
+  "ftp_watts": 250,
+  "slip_days": 0,
+  "last_seen_activity": "",
+  "intervals_icu": {
+    "api_key_env": "INTERVALS_ICU_API_KEY",
+    "auth": "curl -u API_KEY:$INTERVALS_ICU_API_KEY",
+    "external_id_prefix": "cp12",
+    "zwift_upload_workouts": true,
+    "last_seen_activity_id": null,
+    "endpoints": {
+      "upsert_events": "POST /api/v1/athlete/0/events/bulk?upsert=true",
+      "list_events": "GET /api/v1/athlete/0/events?oldest=YYYY-MM-DD&newest=YYYY-MM-DD",
+      "delete_event": "DELETE /api/v1/athlete/0/events/{id}",
+      "list_activities": "GET /api/v1/athlete/0/activities?oldest=&newest=",
+      "update_activity": "PUT /api/v1/activity/{id}"
+    }
+  },
+  "zwift_workouts_dir": "/path/to/Documents/Zwift/Workouts/<ZWIFT_USER_ID>",
+  "weekly_template": {
+    "Mon": "60 min Z2 (easy spin; keep it light if the previous day was lower-body strength)",
+    "Tue": "75 min Z2",
+    "Wed": "quality session 1 (sweet spot, threshold, or openers \u2014 see the week table)",
+    "Thu": "off-bike strength (no heavy legs within 48 h of a key interval session)",
+    "Fri": "quality session 2 (spin-ups, easy Z2, VO2, or FTP test \u2014 see the week table)",
+    "Sat": "long ride",
+    "Sun": "rest (optional 40 min very-easy spin is in the workout library if you want it)"
+  },
+  "deload_weeks": [
+    4,
+    9,
+    12
+  ],
+  "days_off": {
+    "YYYY-MM-DD": "travel or other planned day off"
+  },
+  "week_overrides": {},
+  "pending_missed": [],
+  "adjustments": {},
+  "robopacer": {
+    "schedule_url": "https://zwiftinsider.com/robopacer-schedule/",
+    "roster_wkg": {
+      "Maria": 2.2,
+      "Betty": 2.4,
+      "Coco": 2.6,
+      "Yumi": 2.9,
+      "Jacques": 3.2
+    },
+    "picks": {
+      "Mon_Z2_60": "Coco 2.6 (Betty 2.4 if legs are heavy after strength)",
+      "Tue_Z2_75": "Yumi 2.9",
+      "Sat_long_no_tempo": "Yumi 2.9 for the full duration (Coco 2.6 if HR drifts more than 5% in the second half)",
+      "Sat_long_with_tempo": "Use the structured .zwo (tempo blocks need ERG). Optional: a mid-pack bot for the Z2 portions.",
+      "Sun_optional": "Maria 2.2 or Betty 2.4",
+      "recovery_weeks_4_9_12_easy_rides": "Betty 2.4 (Maria 2.2 when returning from travel or illness)",
+      "Wk01-03_Fri_spinups": "Coco 2.6, and do the 30s spin-ups at 110 rpm in the bunch"
+    },
+    "rules": "Ride time-based (leave when the planned duration is done). Sit in the draft; real power will run about 10-20% under the bot. Drop to the next-slower bot if HR drifts or RPE goes above 4. Never use a bot on quality days (sweet spot, threshold, VO2, openers, FTP test)."
+  },
+  "morning_readiness": {
+    "enabled": true,
+    "questions": "sleep hours; sleep quality 1-5; legs 1-5; energy 1-5; stress 1-5 (5 = most stressed); night waking and cause; resting HR optional",
+    "log": "logs/readiness_log.csv"
+  },
+  "paths": {
+    "workouts": "workouts/",
+    "training_log": "logs/training_log.csv",
+    "readiness_log": "logs/readiness_log.csv",
+    "rules": "adjustment_rules.md"
+  }
+}

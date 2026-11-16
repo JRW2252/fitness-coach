@@ -1,0 +1,18 @@
+# Local athlete state and logs — keep these out of a public repo.
+state.json
+logs/
+*.csv
+!templates/*.csv
+
+# Secrets
+.env
+.env.*
+
+# Generated zips and local activity files
+*.zip
+activities/
+*.fit
+
+# Python
+__pycache__/
+*.pyc

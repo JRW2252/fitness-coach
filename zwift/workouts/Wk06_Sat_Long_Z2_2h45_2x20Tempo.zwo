@@ -1,0 +1,14 @@
+<workout_file>
+  <author>cycling coach</author>
+  <name>Wk06 Sat - Long Z2 2h45 + 2x20 Tempo</name>
+  <description>Long Z2 with 2x20 min tempo late in the ride (76-90% FTP). Fuel 60-90 g carbs/hr.</description>
+  <sportType>bike</sportType>
+  <tags><tag name="CUSTOM 12 WEEK PLAN"/></tags>
+  <workout>
+    <Warmup Duration="600" PowerLow="0.45" PowerHigh="0.70"/>
+    <SteadyState Duration="4500" Power="0.68"/>
+    <IntervalsT Repeat="2" OnDuration="1200" OffDuration="300" OnPower="0.83" OffPower="0.62"/>
+    <SteadyState Duration="900" Power="0.68"/>
+    <Cooldown Duration="600" PowerLow="0.60" PowerHigh="0.40"/>
+  </workout>
+</workout_file>

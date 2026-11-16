@@ -1,0 +1,13 @@
+<workout_file>
+  <author>cycling coach</author>
+  <name>Wk07 Wed - Threshold 2x20</name>
+  <description>Threshold 95-105% FTP, 5 min easy between.</description>
+  <sportType>bike</sportType>
+  <tags><tag name="CUSTOM 12 WEEK PLAN"/></tags>
+  <workout>
+    <Warmup Duration="900" PowerLow="0.45" PowerHigh="0.70"/>
+    <IntervalsT Repeat="2" OnDuration="1200" OffDuration="300" OnPower="1.0" OffPower="0.55"/>
+    <SteadyState Duration="600" Power="0.65"/>
+    <Cooldown Duration="600" PowerLow="0.60" PowerHigh="0.40"/>
+  </workout>
+</workout_file>

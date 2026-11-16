@@ -1,0 +1,12 @@
+<workout_file>
+  <author>cycling coach</author>
+  <name>Wk04 Fri - Easy Z2 60 min</name>
+  <description>Recovery week. Easy.</description>
+  <sportType>bike</sportType>
+  <tags><tag name="CUSTOM 12 WEEK PLAN"/></tags>
+  <workout>
+    <Warmup Duration="600" PowerLow="0.45" PowerHigh="0.70"/>
+    <SteadyState Duration="2700" Power="0.6"/>
+    <Cooldown Duration="300" PowerLow="0.60" PowerHigh="0.40"/>
+  </workout>
+</workout_file>

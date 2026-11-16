@@ -1,0 +1,12 @@
+<workout_file>
+  <author>cycling coach</author>
+  <name>Mon - Z2 Easy Spin 60 min</name>
+  <description>Easy spin after lower-body strength. Keep it light.</description>
+  <sportType>bike</sportType>
+  <tags><tag name="CUSTOM 12 WEEK PLAN"/></tags>
+  <workout>
+    <Warmup Duration="600" PowerLow="0.45" PowerHigh="0.70"/>
+    <SteadyState Duration="2700" Power="0.62"/>
+    <Cooldown Duration="300" PowerLow="0.60" PowerHigh="0.40"/>
+  </workout>
+</workout_file>
