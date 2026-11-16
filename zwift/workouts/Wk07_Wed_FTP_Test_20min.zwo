@@ -1,0 +1,14 @@
+<workout_file>
+  <author>cycling coach</author>
+  <name>Wk07 Wed - FTP Test (20 min)</name>
+  <description>20-min all-out effort. FTP = 95% of 20-min avg power. Pace evenly.</description>
+  <sportType>bike</sportType>
+  <tags><tag name="CUSTOM 12 WEEK PLAN"/></tags>
+  <workout>
+    <Warmup Duration="900" PowerLow="0.45" PowerHigh="0.70"/>
+    <SteadyState Duration="300" Power="1.05"/>
+    <SteadyState Duration="600" Power="0.5"/>
+    <FreeRide Duration="1200" FlatRoad="0"/>
+    <Cooldown Duration="900" PowerLow="0.60" PowerHigh="0.40"/>
+  </workout>
+</workout_file>

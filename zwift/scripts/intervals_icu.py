@@ -2,9 +2,12 @@
 """Small intervals.icu helper for the Zwift plan workflow.
 
 Reads the API key from the INTERVALS_ICU_API_KEY environment variable
-(never prints it). Talks to the API with curl and HTTP basic auth, because
-some Python HTTP clients (including urllib) have been observed to get HTTP
-403 from intervals.icu with the same credentials.
+(never prints it, and never puts it on a command line). Sends HTTP basic
+auth with urllib and a normal User-Agent.
+
+intervals.icu is behind Cloudflare. urllib's default User-Agent gets HTTP
+403 (Cloudflare error 1010). A descriptive User-Agent gets the real API
+status instead (401 when the key is wrong).
 
 Auth, as documented by intervals.icu: username API_KEY, password = your key.
 Athlete id 0 means "the athlete who owns this key."
@@ -22,16 +25,19 @@ Examples:
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
-import subprocess
 import sys
+import urllib.error
+import urllib.request
 from datetime import date
 from typing import Any
 
 BASE = "https://intervals.icu/api/v1"
 DEFAULT_PREFIX = "cp12"
 ENV_VAR = "INTERVALS_ICU_API_KEY"
+USER_AGENT = "fitness-coach-zwift/1.0 (intervals.icu helper)"
 
 
 def require_key() -> str:
@@ -45,63 +51,39 @@ def require_key() -> str:
     return key
 
 
-def curl_json(
+def api_json(
     method: str,
     path: str,
     payload: Any | None = None,
     key: str | None = None,
 ) -> Any:
-    """Call the API with curl. The key is passed to curl and never printed."""
+    """Call the API with urllib. The key is a Basic header and is never printed."""
     api_key = key if key is not None else require_key()
     url = f"{BASE}{path}"
-    cmd = [
-        "curl",
-        "-sS",
-        "-X",
-        method,
-        "-u",
-        f"API_KEY:{api_key}",
-        "-H",
-        "Accept: application/json",
-        "-w",
-        "\n%{http_code}",
-        url,
-    ]
-    body = None
+    token = base64.b64encode(f"API_KEY:{api_key}".encode()).decode("ascii")
+    headers = {
+        "Accept": "application/json",
+        "User-Agent": USER_AGENT,
+        "Authorization": f"Basic {token}",
+    }
+    data = None
     if payload is not None:
-        body = json.dumps(payload)
-        cmd[4:4] = ["-H", "Content-Type: application/json", "--data-binary", "@-"]
-
+        data = json.dumps(payload).encode("utf-8")
+        headers["Content-Type"] = "application/json"
+    request = urllib.request.Request(url, data=data, headers=headers, method=method)
     try:
-        result = subprocess.run(
-            cmd,
-            input=body,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-    except FileNotFoundError:
-        sys.exit("curl is required but was not found on PATH.")
-
-    if result.returncode != 0:
-        # Do not echo the command: it contains the API key.
-        err = (result.stderr or result.stdout or "curl failed").strip()
-        sys.exit(f"curl failed talking to intervals.icu: {err}")
-
-    raw = result.stdout or ""
-    # Split off the HTTP status we appended with -w.
-    if "\n" in raw:
-        response_body, _, status_str = raw.rpartition("\n")
-    else:
-        response_body, status_str = "", raw
-    try:
-        status = int(status_str)
-    except ValueError:
-        sys.exit(f"Unexpected curl output (status unreadable). Body length: {len(raw)}")
+        with urllib.request.urlopen(request, timeout=60) as response:
+            status = response.status
+            response_body = response.read().decode("utf-8")
+    except urllib.error.HTTPError as error:
+        # The body is the API error. Do not print the request: it carries the key.
+        response_body = error.read().decode("utf-8", errors="replace")
+        sys.exit(f"intervals.icu returned HTTP {error.code}: {response_body.strip()[:2000]}")
+    except urllib.error.URLError as error:
+        sys.exit(f"Could not reach intervals.icu: {error.reason}")
 
     if status >= 400:
         sys.exit(f"intervals.icu returned HTTP {status}: {response_body.strip()[:2000]}")
-
     if not response_body.strip():
         return None
     try:
@@ -138,19 +120,19 @@ def upsert_event(
     ]
     if name:
         payload[0]["name"] = name
-    return curl_json("POST", "/athlete/0/events/bulk?upsert=true", payload)
+    return api_json("POST", "/athlete/0/events/bulk?upsert=true", payload)
 
 
 def list_events(oldest: str, newest: str) -> Any:
-    return curl_json("GET", f"/athlete/0/events?oldest={oldest}&newest={newest}")
+    return api_json("GET", f"/athlete/0/events?oldest={oldest}&newest={newest}")
 
 
 def list_activities(oldest: str, newest: str) -> Any:
-    return curl_json("GET", f"/athlete/0/activities?oldest={oldest}&newest={newest}")
+    return api_json("GET", f"/athlete/0/activities?oldest={oldest}&newest={newest}")
 
 
 def delete_event(event_id: str) -> Any:
-    return curl_json("DELETE", f"/athlete/0/events/{event_id}")
+    return api_json("DELETE", f"/athlete/0/events/{event_id}")
 
 
 def delete_by_date(day: str, prefix: str = DEFAULT_PREFIX) -> Any:
@@ -172,7 +154,7 @@ def set_rpe(activity_id: str, rpe: int, feel: int | None = None) -> Any:
         if feel < 1 or feel > 5:
             sys.exit("feel must be 1-5 (1 = strong, 5 = weak).")
         payload["feel"] = int(feel)
-    return curl_json("PUT", f"/activity/{activity_id}", payload)
+    return api_json("PUT", f"/activity/{activity_id}", payload)
 
 
 def _dump(data: Any) -> None:

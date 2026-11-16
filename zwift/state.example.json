@@ -5,7 +5,7 @@
   "last_seen_activity": "",
   "intervals_icu": {
     "api_key_env": "INTERVALS_ICU_API_KEY",
-    "auth": "curl -u API_KEY:$INTERVALS_ICU_API_KEY",
+    "auth": "HTTP basic username API_KEY; password from INTERVALS_ICU_API_KEY via urllib User-Agent, not a command-line argument",
     "external_id_prefix": "cp12",
     "zwift_upload_workouts": true,
     "last_seen_activity_id": null,
@@ -19,11 +19,11 @@
   },
   "zwift_workouts_dir": "/path/to/Documents/Zwift/Workouts/<ZWIFT_USER_ID>",
   "weekly_template": {
-    "Mon": "60 min Z2 (easy spin; keep it light if the previous day was lower-body strength)",
+    "Mon": "60 min Z2 (easy spin the day after the long ride)",
     "Tue": "75 min Z2",
-    "Wed": "quality session 1 (sweet spot, threshold, or openers \u2014 see the week table)",
-    "Thu": "off-bike strength (no heavy legs within 48 h of a key interval session)",
-    "Fri": "quality session 2 (spin-ups, easy Z2, VO2, or FTP test \u2014 see the week table)",
+    "Wed": "quality session 1 (sweet spot, threshold, FTP check, or openers - see the week table)",
+    "Thu": "upper-body, light, or rest (no heavy legs, no Zwift ride)",
+    "Fri": "quality session 2, then heavy lower-body strength after the ride or at least 6 h apart the same day",
     "Sat": "long ride",
     "Sun": "rest (optional 40 min very-easy spin is in the workout library if you want it)"
   },
@@ -48,7 +48,7 @@
       "Jacques": 3.2
     },
     "picks": {
-      "Mon_Z2_60": "Coco 2.6 (Betty 2.4 if legs are heavy after strength)",
+      "Mon_Z2_60": "Coco 2.6 (Betty 2.4 if legs are heavy after the long ride)",
       "Tue_Z2_75": "Yumi 2.9",
       "Sat_long_no_tempo": "Yumi 2.9 for the full duration (Coco 2.6 if HR drifts more than 5% in the second half)",
       "Sat_long_with_tempo": "Use the structured .zwo (tempo blocks need ERG). Optional: a mid-pack bot for the Z2 portions.",

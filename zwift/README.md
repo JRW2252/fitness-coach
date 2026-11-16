@@ -73,7 +73,7 @@ Endurance days can be ridden with Zwift RoboPacer bots (a backup Z2 `.zwo` is st
 - A Zwift account and a power meter or a smart trainer that reports power
 - An [intervals.icu](https://intervals.icu) account, connected to Zwift, with planned-workout upload turned on
 - An intervals.icu API key stored as the environment variable `INTERVALS_ICU_API_KEY` (never committed)
-- Python 3.9+ and `curl`, if you use the helper script
+- Python 3.9+, if you use the helper script
 - Your current FTP, entered **identically** in Zwift and in intervals.icu
 
 ## Setup
@@ -115,14 +115,18 @@ In intervals.icu, open Settings and find Developer Settings. Create an API key a
 export INTERVALS_ICU_API_KEY="..."    # do not print, log, or commit this
 ```
 
-Authentication is HTTP basic auth with the username `API_KEY` and the key as the password:
+Authentication is HTTP basic auth with the username `API_KEY` and the key as the password. The helper sends that header from Python (`urllib`) with its own User-Agent, and it does not put the key on a command line. Cloudflare returns HTTP 403 to urllib's default User-Agent; a normal User-Agent gets the real API status.
+
+Athlete id `0` means "the athlete who owns this key." If you call the API yourself with curl, pass the key on stdin so it does not show up in the process list:
 
 ```bash
-curl -sS -u API_KEY:$INTERVALS_ICU_API_KEY \
-  "https://intervals.icu/api/v1/athlete/0/activities?oldest=2026-11-01&newest=2026-11-15"
+curl -sS -K - <<EOF
+user = "API_KEY:${INTERVALS_ICU_API_KEY}"
+header = "Accept: application/json"
+header = "User-Agent: fitness-coach-zwift/1.0"
+url = "https://intervals.icu/api/v1/athlete/0/activities?oldest=2026-11-01&newest=2026-11-15"
+EOF
 ```
-
-Athlete id `0` means "the athlete who owns this key." Some Python HTTP clients, including `urllib`, have been observed to get HTTP 403 with the same credentials; the helper script uses `curl` for that reason.
 
 ### 4. Connect Zwift to intervals.icu and match FTP
 
@@ -190,13 +194,17 @@ Default week shape:
 
 | Day | Session |
 |---|---|
-| Mon | 60 min Z2 (keep it light if the previous day was lower-body strength) |
+| Mon | 60 min Z2 (easy, the day after the long ride) |
 | Tue | 75 min Z2 |
 | Wed | Quality session 1 |
-| Thu | Off-bike strength (no Zwift ride) |
-| Fri | Quality session 2 |
+| Thu | Upper-body, light, or rest (no Zwift ride, no heavy legs) |
+| Fri | Quality session 2, then heavy lower-body strength |
 | Sat | Long ride |
 | Sun | Rest (an optional 40 min very-easy spin is in the library) |
+
+The intended layout is Monday easy, Wednesday and Friday as the two quality days, and Saturday long. That is not a Mon/Wed/Fri hard-day layout. The coach file uses about two hard days a week for most amateurs. Monday stays easy so the day after the long ride is not an interval day. Thursday is light, so the two interval days are not back-to-back. A Mon/Wed/Fri hard layout would add a third intensity day and put it immediately after Saturday.
+
+Heavy lower-body strength is on Friday, after the quality ride or at least 6 h apart the same day. The next key interval session is the following Wednesday, which is outside 48 h. Heavy legs on Wednesday would land inside 48 h of Friday's intervals, so Wednesday is not the strength day. Thursday stays upper-body, light, or rest.
 
 Week-by-week quality work:
 
@@ -208,14 +216,18 @@ Week-by-week quality work:
 | 4 | Deload | Sweet spot 2×10 | Easy Z2 60 | 2h00 Z2 |
 | 5 | Build | Threshold 2×15 | VO2 5×3 | 2h45 + 2×15 tempo |
 | 6 | Build | Threshold 3×12 | VO2 6×3 | 2h45 + 2×20 tempo |
-| 7 | Build | Threshold 2×20 | VO2 5×4 | 3h00 + 2×20 tempo |
+| 7 | Lighter (2:1) | 20-min FTP check | VO2 4×2 | 2h00 + 1×10 tempo |
 | 8 | Build | Threshold 3×15 | VO2 6×4 | 3h00 + 3×15 tempo |
-| 9 | Deload / travel | Easy 45-60 min rides, or days off | | |
+| 9 | Deload | Easy 45-60 min rides | | |
 | 10 | Build | Threshold 2×20 | VO2 5×4 | 3h00 + 2×20 tempo |
 | 11 | Build | Threshold 3×15 | VO2 6×4 | 3h15 + 3×15 tempo |
 | 12 | Test / deload | Openers 2×8 | 20-min FTP test | Easy Z2 2h00 |
 
-You can move week 12's openers and test with `week_overrides` (for example, openers two days before the test, very easy or rest the day before). Do not adjust the test itself off of how earlier sessions felt.
+Weeks 5 and 6 are a build pair. Week 7 is lighter: about a third less time in those three files (a 20-min check, a short VO2 ride, and a 2 h long ride instead of a full threshold session, a longer VO2 session, and a 3 h ride). Week 8 loads again, then week 9 is a deload. That breaks up what would have been four loading weeks in a row.
+
+Start the plan with a current FTP. Retest every 6-8 weeks, or derive FTP from a recent best effort. This plan's checks are Wednesday of week 7 and Friday of week 12. Put the same new number in Zwift and in intervals.icu. Do not change FTP from a few easy rides, and do not adjust a test file off of how earlier sessions felt.
+
+You can move either test with `week_overrides` (for week 12, openers two days before the test and a very easy day or rest the day before). Do not adjust the test itself.
 
 Target fractions used in the files (print watts with `--ftp`):
 
@@ -234,7 +246,7 @@ Target fractions used in the files (print watts with `--ftp`):
 
 ### Morning drop
 
-Resolve today's file from the plan week, the weekday template, `week_overrides`, and `days_off`. Apply [`adjustment_rules.md`](adjustment_rules.md) (readiness flags, hard/easy days, missed sessions, illness, deloads, ceilings, weekly checks). Upsert the adjusted `.zwo`, or delete the event on a rest day.
+Resolve today's file from the plan week, the weekday template, `week_overrides`, and `days_off`. Apply [`adjustment_rules.md`](adjustment_rules.md), which points at [`generic/cycling-coach.md`](../generic/cycling-coach.md) for the general rules and keeps the Zwift actions (which file to upsert, when to delete, the lighter week, the FTP checks). Upsert the adjusted `.zwo`, or delete the event on a rest day.
 
 On Z2 days, name a RoboPacer bot from the roster in `state.json` and look up the day's route on [Zwift Insider's RoboPacer schedule](https://zwiftinsider.com/robopacer-schedule/). Sit in the draft; real power typically runs about 10-20% under the bot. Leave when the planned duration is done, and drop to the next-slower bot if HR drifts or RPE goes above 4. Never use a bot on a quality day. Long rides with tempo blocks stay on the structured `.zwo` because those blocks need ERG.
 
@@ -246,7 +258,7 @@ List activities newer than `last_seen_activity_id`. Log duration, average and no
 
 ### Sunday preview
 
-Apply the weekly checks, then upsert the coming Mon-Sat events (and delete rest days) so Zwift has the next 7 days. The message lists watt targets, RoboPacer picks, the Thursday strength session, fueling on long days, and a short prep note for the hardest session.
+Apply the weekly checks, then upsert the coming Mon-Sat events (and delete rest days) so Zwift has the next 7 days. The message lists watt targets, RoboPacer picks, Friday's heavy strength after the ride, Thursday as upper-body or light or rest, fueling on long days, and a short prep note for the hardest session.
 
 ## Helper script
 
@@ -277,8 +289,8 @@ The numeric folder name is the Zwift user id for that install. This path only wo
 
 | Symptom | What to try |
 |---|---|
-| HTTP 403 from a Python client | Use `curl -u API_KEY:$KEY`, or this repo's helper. Confirm the key is the intervals.icu API key, not a bearer token from another service. |
-| HTTP 401 / still 403 with curl | Regenerate the key in Developer Settings and re-export the env var. Do not log the key while debugging. |
+| HTTP 403 from Python | Cloudflare blocks urllib's default User-Agent (error 1010). Use this helper, which sets a User-Agent. Do not pass the key with curl `-u`; that puts it in the process list. |
+| HTTP 401 | The key was rejected. Regenerate it in Developer Settings and re-export the env var. Do not log the key while debugging. |
 | Workout does not appear in Zwift | Confirm intervals.icu is connected to Zwift with planned-workout upload on; only the next 7 days sync; restart Zwift; check the event exists on the intervals.icu calendar. |
 | Workout appears at the wrong watts | FTP in Zwift and intervals.icu do not match. Align them. Do not change FTP based on a few easy rides. |
 | Duplicate calendar events | Re-upsert with the same `external_id` (`cp12-YYYY-MM-DD`). Do not POST a new event without that id. |

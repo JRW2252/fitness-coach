@@ -39,13 +39,14 @@ PLAN = {
     4: (("ss", 2, 10), ("easy",), (120, 0, 0)),
     5: (("th", 2, 15), ("vo", 5, 3), (165, 2, 15)),
     6: (("th", 3, 12), ("vo", 6, 3), (165, 2, 20)),
-    7: (("th", 2, 20), ("vo", 5, 4), (180, 2, 20)),
+    # Week 7 is the lighter week (about 2:1). Generated separately below.
     8: (("th", 3, 15), ("vo", 6, 4), (180, 3, 15)),
     10: (("th", 2, 20), ("vo", 5, 4), (180, 2, 20)),
     11: (("th", 3, 15), ("vo", 6, 4), (195, 3, 15)),
 }
 
-# Week 9 is a deload / travel week: only easy-ride files are generated.
+# Week 7 is a lighter week: 20-min FTP check, a short VO2 session, a shorter long ride.
+# Week 9 is a deload week: only easy-ride files are generated.
 # Week 12 is a test week: openers, a 20-min FTP test, and an easy long ride.
 
 
@@ -214,6 +215,24 @@ def long_ride(
     )
 
 
+def ftp_test(out_dir: str, fname: str, name: str, author: str, tag: str) -> None:
+    write_zwo(
+        out_dir,
+        fname,
+        name,
+        "20-min all-out effort. FTP = 95% of 20-min avg power. Pace evenly.",
+        [
+            warmup(15),
+            steady(5, 1.05),
+            steady(10, 0.50),
+            '<FreeRide Duration="1200" FlatRoad="0"/>',
+            cooldown(15),
+        ],
+        author,
+        tag,
+    )
+
+
 def hours_label(total_min: int) -> str:
     return f"{total_min // 60}h{total_min % 60:02d}"
 
@@ -227,7 +246,7 @@ def generate(out_dir: str, author: str, tag: str) -> list[str]:
         "Mon - Z2 Easy Spin 60 min",
         60,
         Z2_EASY,
-        "Easy spin after lower-body strength. Keep it light.",
+        "Easy Zone 2 the day after the long ride. Keep it light.",
         author,
         tag,
     )
@@ -329,7 +348,42 @@ def generate(out_dir: str, author: str, tag: str) -> list[str]:
             tag,
         )
 
-    # Week 9 deload / travel: easy rides only. Mark specific dates as days off
+    # Week 7 lighter week inside the build block. Wednesday is the mid-plan
+    # 20-min FTP check. Friday keeps a short VO2 session. Saturday is shorter
+    # than the surrounding long rides (about a third less time across these three).
+    ftp_test(
+        out_dir,
+        "Wk07_Wed_FTP_Test_20min",
+        "Wk07 Wed - FTP Test (20 min)",
+        author,
+        tag,
+    )
+    interval_ride(
+        out_dir,
+        "Wk07_Fri_VO2_4x2",
+        "Wk07 Fri - VO2 Max 4x2 min",
+        "Short VO2 on the lighter week. 110-120% FTP, equal-time easy recovery.",
+        4,
+        2,
+        2,
+        VO2,
+        0.50,
+        50,
+        author,
+        tag,
+    )
+    long_ride(
+        out_dir,
+        "Wk07_Sat_Long_Z2_2h00_1x10Tempo",
+        "Wk07 Sat - Long Z2 2h00 + 1x10 Tempo",
+        120,
+        1,
+        10,
+        author,
+        tag,
+    )
+
+    # Week 9 deload: easy rides only. Mark specific dates as days off
     # in state.json rather than generating a full week of quality work.
     z2_ride(
         out_dir,
@@ -337,7 +391,7 @@ def generate(out_dir: str, author: str, tag: str) -> list[str]:
         "Wk09 Deload - Easy Ride 45 min",
         45,
         Z2_RECOVERY,
-        "Deload or travel week. Easy.",
+        "Deload week. Easy.",
         author,
         tag,
     )
@@ -347,7 +401,7 @@ def generate(out_dir: str, author: str, tag: str) -> list[str]:
         "Wk09 Deload - Easy Ride 60 min",
         60,
         Z2_RECOVERY,
-        "Deload or travel week. Easy.",
+        "Deload week. Easy.",
         author,
         tag,
     )
@@ -367,18 +421,10 @@ def generate(out_dir: str, author: str, tag: str) -> list[str]:
         author,
         tag,
     )
-    write_zwo(
+    ftp_test(
         out_dir,
         "Wk12_Fri_FTP_Test_20min",
         "Wk12 Fri - FTP Test (20 min)",
-        "20-min all-out effort. FTP = 95% of 20-min avg power. Pace evenly.",
-        [
-            warmup(15),
-            steady(5, 1.05),
-            steady(10, 0.50),
-            '<FreeRide Duration="1200" FlatRoad="0"/>',
-            cooldown(15),
-        ],
         author,
         tag,
     )

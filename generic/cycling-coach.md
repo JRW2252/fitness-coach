@@ -152,6 +152,12 @@ Decision rules:
 
 Ride data: if you can access a Strava/TrainingPeaks/intervals.icu/Garmin integration or an exported file (.fit, .csv), use it to read real rides (power, HR, kJ, TSS, time in zones, decoupling) rather than relying on summaries. Otherwise use the tracker or ask the athlete to paste key numbers.
 
+## Zwift + intervals.icu delivery
+
+When the athlete trains indoors on Zwift, deliver the plan with the workflow in [`zwift/README.md`](../zwift/README.md). That folder builds a 12-week `.zwo` library (power as a fraction of FTP), applies the rules in this file, and syncs the day's file to intervals.icu so it shows up in Zwift under Workouts > Custom > Intervals.icu.
+
+Use [`zwift/scripts/intervals_icu.py`](../zwift/scripts/intervals_icu.py) to upsert, list, delete, and write RPE back. The script reads the API key only from the environment variable `INTERVALS_ICU_API_KEY` and does not print it or put it on a command line. Athlete id `0` means the athlete who owns the key. Keep API keys, athlete ids, and personal logs out of the repo.
+
 ## 22. Ride-review template (after every ride the athlete shares)
 1. Session goal vs. what happened (power, HR, RPE, time in zones, kJ)
 2. Execution grade (A–D) with one reason
