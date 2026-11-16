@@ -21,7 +21,7 @@ You can expect an acknowledgement within about 7 days and a fix or a decision wi
 
 - Credentials in the repo or its history: API keys, tokens, athlete ids, machine or Zwift folder ids, passwords
 - Personal data committed by mistake: training or readiness logs, `state.json`, health details, email addresses
-- Scripts (for example `scripts/intervals_icu.py` if present) that could expose a key, for instance through command-line arguments, logs, or error messages, or that send data somewhere unexpected
+- Scripts (such as `workout-sync/scripts/intervals_icu.py`) that could expose a key, for instance through command-line arguments, logs, or error messages, or that send data somewhere unexpected
 - Workflows or dependencies that could run untrusted code
 
 ## Out of scope
@@ -38,7 +38,7 @@ You can expect an acknowledgement within about 7 days and a fix or a decision wi
 ## Guidance for contributors and users
 
 - Keep API keys in environment variables, never in files in this repo. Do not print or log them.
-- Keep `state.json`, `logs/`, and anything with real athlete data out of the repo (use a `.gitignore`; an example is provided in the Zwift integration branch).
+- Keep `state.json`, `logs/`, and anything with real athlete data out of the repo (use a `.gitignore`; an example is in `workout-sync/gitignore.example`).
 - Use placeholders in examples (athlete id `0`, FTP 250, `<ZWIFT_USER_ID>`).
 - Do not paste secrets or medical records into prompts for AI models you do not control.
 - Review any script before running it, especially ones that make network requests.
