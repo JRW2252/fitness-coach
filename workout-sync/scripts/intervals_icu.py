@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Small intervals.icu helper for the Zwift plan workflow.
+"""Small intervals.icu helper for syncing your own planned workouts.
 
 Reads the API key from the INTERVALS_ICU_API_KEY environment variable
 (never prints it, and never puts it on a command line). Sends HTTP basic
@@ -14,12 +14,12 @@ Athlete id 0 means "the athlete who owns this key."
 
 Examples:
     export INTERVALS_ICU_API_KEY=...    # do not commit this
-    python intervals_icu.py upsert --date 2026-11-16 --zwo ../workouts/Mon_Z2_60.zwo
-    python intervals_icu.py list-activities --oldest 2026-11-01 --newest 2026-11-16
-    python intervals_icu.py set-rpe --activity-id 123456 --rpe 5 --feel 2
-    python intervals_icu.py list-events --oldest 2026-11-16 --newest 2026-11-22
-    python intervals_icu.py delete-event --event-id 123456
-    python intervals_icu.py delete-by-date --date 2026-11-16
+    python intervals_icu.py upsert --date YYYY-MM-DD --zwo ../examples/test_sync_20min.zwo
+    python intervals_icu.py list-activities --oldest YYYY-MM-DD --newest YYYY-MM-DD
+    python intervals_icu.py set-rpe --activity-id ACTIVITY_ID --rpe 5 --feel 2
+    python intervals_icu.py list-events --oldest YYYY-MM-DD --newest YYYY-MM-DD
+    python intervals_icu.py delete-event --event-id EVENT_ID
+    python intervals_icu.py delete-by-date --date YYYY-MM-DD
 """
 
 from __future__ import annotations
@@ -35,9 +35,9 @@ from datetime import date
 from typing import Any
 
 BASE = "https://intervals.icu/api/v1"
-DEFAULT_PREFIX = "cp12"
+DEFAULT_PREFIX = "workout"
 ENV_VAR = "INTERVALS_ICU_API_KEY"
-USER_AGENT = "fitness-coach-zwift/1.0 (intervals.icu helper)"
+USER_AGENT = "fitness-coach-workout-sync/1.0 (intervals.icu helper)"
 
 
 def require_key() -> str:
