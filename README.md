@@ -8,7 +8,8 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
 | `generic/cycling-coach.md` | **Model-agnostic coach.** Plain Markdown, no tool-specific features. Use this for Grok and anything else. |
 | `skill/SKILL.md` | Same content packaged as a Claude skill (has the YAML header Claude expects). |
 | `tracker/TRACKER.md` | Layout and formulas for the daily / session / weekly / test check-in spreadsheet the coach uses to adapt your plan. |
-| `workout-sync/` | **intervals.icu + Zwift workout sync.** Setup guide and bot templates so you can push your own workouts to Zwift and other connected apps. Start at [`workout-sync/README.md`](workout-sync/README.md). |
+| `workout-sync/` | **intervals.icu + Zwift workout sync.** First-run checklist, a guide to writing workout files, a file validator, an upload helper, and bot prompt templates for pushing your own workouts to Zwift and other connected apps. Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md). |
+| `SECURITY.md` | How to report a vulnerability, what is in scope, and what to do if a key or personal data is committed. |
 
 ## Quick start (Grok or any other model)
 1. Open `generic/cycling-coach.md` and copy all of it.
@@ -27,11 +28,20 @@ Plans adapt only as well as the feedback they get. Build the tracker from `track
 
 ## intervals.icu + Zwift workout sync
 
-A setup guide for pushing **your own** workouts through [intervals.icu](https://intervals.icu) so they show up in [Zwift](https://www.zwift.com) (Workouts > Custom > Intervals.icu) and, where intervals.icu supports it, on other connected apps. There is no pre-built plan in this repo.
+A setup guide for getting **your own** workouts onto Zwift, and onto other apps intervals.icu can push to, without copying files by hand. There is no pre-built training plan in this repo. You bring a plan, or have the coach write one, and the sync folder turns it into files and delivers them.
 
-Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md) (account, API key, a test upload, and how to schedule the bot). The reference is [`workout-sync/README.md`](workout-sync/README.md). Writing a workout file is [`workout-sync/authoring_workouts.md`](workout-sync/authoring_workouts.md). Adjustment rules are in [`workout-sync/adjustment_rules.md`](workout-sync/adjustment_rules.md). The helper is [`workout-sync/scripts/intervals_icu.py`](workout-sync/scripts/intervals_icu.py).
+How it fits together:
+1. **Write the workout files** (power as a fraction of FTP) with [`authoring_workouts.md`](workout-sync/authoring_workouts.md), and check them with [`scripts/validate_zwo.py`](workout-sync/scripts/validate_zwo.py).
+2. **Upload them** to your intervals.icu calendar with [`scripts/intervals_icu.py`](workout-sync/scripts/intervals_icu.py). Re-uploading the same date replaces the event instead of duplicating it. intervals.icu forwards about the next 7 days to Zwift (Workouts > Custom > Intervals.icu) and to other connected apps.
+3. **Close the loop.** After the ride, read the activity back, log it, and write RPE to intervals.icu. The prompt templates in [`routines/`](workout-sync/routines/) do this daily, and [`adjustment_rules.md`](workout-sync/adjustment_rules.md) says when to ease, swap or delete a session.
 
-This is an implementation of the check-in loop above, not a replacement for it. You can run the loop with an AI assistant or by hand. Keep API keys, athlete ids, and personal logs out of the public repo.
+| Start here | For |
+|---|---|
+| [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md) | First-run checklist: account, FTP, API key, test upload, test ride, scheduling the bot |
+| [`workout-sync/README.md`](workout-sync/README.md) | Reference: connections, API details, troubleshooting, privacy |
+| [`workout-sync/authoring_workouts.md`](workout-sync/authoring_workouts.md) | Writing `.zwo` or intervals.icu text workouts from the coach file's zones |
+
+The API key lives only in the environment variable `INTERVALS_ICU_API_KEY`; the scripts never print it or put it on a command line. This is an implementation of the check-in loop above, not a replacement for it, and you can run it with an AI assistant or by hand. Keep API keys, athlete ids and personal logs out of the public repo.
 
 ## Keeping the two copies in sync
 `generic/cycling-coach.md` and `skill/SKILL.md` carry the same coaching content; they differ only in the header and a few tool-specific sentences (memory, connectors, the linked sheet). When you change the coaching science, update both.
@@ -40,6 +50,9 @@ This is an implementation of the check-in loop above, not a replacement for it. 
 - Models without web search can't look up new research; the coach is told to say so and flag uncertainty.
 - Sleep, sodium and habit-building sections rest on standard sports-science guidance more than on PubMed trials.
 - HRV and resting-HR flags use your running average, so they are rough in the first 1-2 weeks.
+
+## Security
+Report vulnerabilities privately as described in [`SECURITY.md`](SECURITY.md). Never commit API keys, `state.json` or training logs.
 
 ## Disclaimer
 Coaching guidance, not medical advice. The coach is instructed to tell you to stop and see a physician for red-flag symptoms (chest pain, fainting, palpitations, unexplained collapse in performance, focal bone pain). Get a medical check before starting hard training if you're new to intensity, over about 45 with risk factors, or have any cardiac symptoms.
