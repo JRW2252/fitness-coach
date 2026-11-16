@@ -1,0 +1,14 @@
+<workout_file>
+  <author>cycling coach</author>
+  <name>Test sync - easy Z2 20 min</name>
+  <description>Short easy spin for confirming a planned workout reaches the connected app. Power is a fraction of FTP. One 30 s spin-up, not a hard effort.</description>
+  <sportType>bike</sportType>
+  <tags><tag name="SYNC TEST"/></tags>
+  <workout>
+    <Warmup Duration="300" PowerLow="0.45" PowerHigh="0.65"/>
+    <SteadyState Duration="480" Power="0.62"/>
+    <IntervalsT Repeat="1" OnDuration="30" OffDuration="90" OnPower="0.72" OffPower="0.62" Cadence="110"/>
+    <SteadyState Duration="180" Power="0.62"/>
+    <Cooldown Duration="120" PowerLow="0.55" PowerHigh="0.40"/>
+  </workout>
+</workout_file>

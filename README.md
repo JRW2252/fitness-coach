@@ -8,6 +8,7 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
 | `generic/cycling-coach.md` | **Model-agnostic coach.** Plain Markdown, no tool-specific features. Use this for Grok and anything else. |
 | `skill/SKILL.md` | Same content packaged as a Claude skill (has the YAML header Claude expects). |
 | `tracker/TRACKER.md` | Layout and formulas for the daily / session / weekly / test check-in spreadsheet the coach uses to adapt your plan. |
+| `workout-sync/` | **intervals.icu + Zwift workout sync.** Setup guide and bot templates so you can push your own workouts to Zwift and other connected apps. Start at [`workout-sync/README.md`](workout-sync/README.md). |
 
 ## Quick start (Grok or any other model)
 1. Open `generic/cycling-coach.md` and copy all of it.
@@ -23,6 +24,14 @@ Add `skill/SKILL.md` as a skill, or drop the `skill/` folder into a Claude Code 
 
 ## The check-in loop
 Plans adapt only as well as the feedback they get. Build the tracker from `tracker/TRACKER.md` (any spreadsheet app), log a 30-second daily check-in (sleep, HRV/resting HR, legs, energy, stress) plus session RPE and completion, then paste the latest rows into the chat and say "review my tracker and plan next week." The coach applies the decision rules in section 21 of the coach file.
+
+## intervals.icu + Zwift workout sync
+
+A setup guide for pushing **your own** workouts through [intervals.icu](https://intervals.icu) so they show up in [Zwift](https://www.zwift.com) (Workouts > Custom > Intervals.icu) and, where intervals.icu supports it, on other connected apps. There is no pre-built plan in this repo.
+
+Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md) (account, API key, a test upload, and how to schedule the bot). The reference is [`workout-sync/README.md`](workout-sync/README.md). Writing a workout file is [`workout-sync/authoring_workouts.md`](workout-sync/authoring_workouts.md). Adjustment rules are in [`workout-sync/adjustment_rules.md`](workout-sync/adjustment_rules.md). The helper is [`workout-sync/scripts/intervals_icu.py`](workout-sync/scripts/intervals_icu.py).
+
+This is an implementation of the check-in loop above, not a replacement for it. You can run the loop with an AI assistant or by hand. Keep API keys, athlete ids, and personal logs out of the public repo.
 
 ## Keeping the two copies in sync
 `generic/cycling-coach.md` and `skill/SKILL.md` carry the same coaching content; they differ only in the header and a few tool-specific sentences (memory, connectors, the linked sheet). When you change the coaching science, update both.

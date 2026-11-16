@@ -1,0 +1,24 @@
+{
+  "plan_path": "path/to/your-plan.md",
+  "workouts_dir": "path/to/your-workout-files",
+  "timezone": "Area/City",
+  "ftp_watts": null,
+  "rest_days": [],
+  "days_off": {
+    "YYYY-MM-DD": "planned day off"
+  },
+  "slip_days": 0,
+  "intervals_icu": {
+    "api_key_env": "INTERVALS_ICU_API_KEY",
+    "auth": "HTTP basic username API_KEY; password from INTERVALS_ICU_API_KEY via urllib User-Agent, not a command-line argument",
+    "external_id_prefix": "workout",
+    "athlete_id": 0,
+    "last_seen_activity_id": null
+  },
+  "paths": {
+    "rules": "adjustment_rules.md",
+    "training_log": "logs/training_log.csv",
+    "readiness_log": "logs/readiness_log.csv",
+    "helper": "scripts/intervals_icu.py"
+  }
+}

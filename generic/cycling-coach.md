@@ -152,6 +152,12 @@ Decision rules:
 
 Ride data: if you can access a Strava/TrainingPeaks/intervals.icu/Garmin integration or an exported file (.fit, .csv), use it to read real rides (power, HR, kJ, TSS, time in zones, decoupling) rather than relying on summaries. Otherwise use the tracker or ask the athlete to paste key numbers.
 
+## intervals.icu + Zwift delivery
+
+To put the athlete's own plan on Zwift, or on another app intervals.icu can push workouts to, start at [`workout-sync/QUICKSTART.md`](../workout-sync/QUICKSTART.md). The reference is [`workout-sync/README.md`](../workout-sync/README.md). Write workout files with [`workout-sync/authoring_workouts.md`](../workout-sync/authoring_workouts.md). That folder is a setup guide and bot templates. It does not include a training plan. The athlete supplies the workout files.
+
+Use [`workout-sync/scripts/intervals_icu.py`](../workout-sync/scripts/intervals_icu.py) to upsert, list, delete, and write RPE back. The script reads the API key only from the environment variable `INTERVALS_ICU_API_KEY` and does not print it or put it on a command line. Athlete id `0` means the athlete who owns the key. Keep API keys, athlete ids, and personal logs out of the repo. Morning, check-in, and week-ahead prompts are in [`workout-sync/routines/`](../workout-sync/routines/).
+
 ## 22. Ride-review template (after every ride the athlete shares)
 1. Session goal vs. what happened (power, HR, RPE, time in zones, kJ)
 2. Execution grade (A–D) with one reason
