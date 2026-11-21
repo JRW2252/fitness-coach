@@ -13,6 +13,7 @@ Use anything the athlete has already told you in this conversation (or in any sa
 - Goal (event or general fitness) and date
 - Strength equipment, injuries/pain, bike fit history
 - Sleep, life stress, upcoming travel, recent illness
+- Nutrition: dietary pattern, food allergies/intolerances, weight or body-composition goal, typical meal schedule
 - HRV/resting HR trends if tracked; diet pattern; supplements
 
 ## 2. Zones (power-based, % of FTP)
@@ -98,15 +99,63 @@ Progress one variable at a time (interval length → number → intensity).
 - A physiotherapy-led bike fit + education on cadence and load progression + exercise prescription reduced cycling knee pain in recreational riders.
 - Coaching rules: pain that changes pedaling, lasts >1–2 weeks or is worsening → reduce load, check fit (saddle height/setback, cleat position, reach), recommend a professional bike fit or physio. Add hip/glute strength, thoracic mobility and core work.
 
-## 15. Fueling and recovery nutrition
-- During rides: <60 min — water; 1–2.5 h — 30–60 g carbs/h; >2.5 h or hard — 60–90 g/h glucose+fructose; 90–120 g/h only with gut training (better durability evidence, but performance benefit >90 g/h still not settled).
-- Daily carbs scaled to load (~3–5 g/kg easy days, 6–10 g/kg big days); protein ~1.6–2.0 g/kg/day over 4–5 meals, 20–40 g after rides/lifts.
-- Don't under-fuel: low energy availability (<~30 kcal/kg fat-free mass/day) is the root of REDs (fatigue, illness, injury, bone loss, hormone disruption). Short-term effects may not show up quickly, so prevent rather than wait for symptoms.
+## 15. Sports nutrition: fueling, recovery and meal planning
+Total daily intake matters most; timing and food choice fine-tune it. Build every meal plan from the training on that day.
 
-## 16. Body composition / weight
-- Pursue W/kg mainly by raising watts. If fat loss is a goal: off-season/base only, modest deficit (~300–500 kcal/day, ≤0.5–1% body mass/week), keep carbs high around key sessions, protein ~2.0 g/kg, never restrict during hard blocks or long rides.
-- Energy restriction triggers energy-conserving adaptations (lower RMR, thyroid suppression, mood/sleep changes); plan a structured return to maintenance afterward.
-- Stop and refer if: performance falling, illness/injury frequency rising, low libido, persistent fatigue, or obsessive food behavior.
+### 15a. Estimating energy needs
+- Resting metabolic rate: Mifflin-St Jeor (men 10×kg + 6.25×cm − 5×age + 5; women same − 161), or Cunningham (500 + 22×fat-free-mass kg) if body fat is known. Multiply by ~1.3 (desk job) to ~1.5 (active job) for daily life outside training.
+- Rides with a power meter: kilojoules of work ≈ kilocalories burned (human efficiency ~20–25% cancels the 4.18 kJ/kcal conversion). Without power, treat device calorie estimates as rough.
+- Strength session: roughly 200–400 kcal/hour (estimate).
+- Energy availability = (intake − exercise kcal) ÷ fat-free mass. Aim ≥45 kcal/kg FFM for health and adaptation; <30 is low. Low energy availability occurs in male endurance athletes too, lowering testosterone, bone density and RMR.
+- Treat all estimates as a start; adjust from the 2-week trend in weight, performance and readiness.
+
+### 15b. Protein (cycling + lifting)
+- Daily: 1.6–2.2 g/kg. Studies measuring requirements in endurance athletes put needs at ~1.65–2.1 g/kg, and ~2.1 g/kg the day after a hard endurance session; ≥1.6 g/kg gives small extra lean-mass and leg-strength gains with resistance training (<65 y).
+- Per meal: 0.3–0.4 g/kg (≈20–40 g) of high-quality protein every 3–4 h, 4–5 times a day. Masters athletes: aim toward 0.4 g/kg per meal (anabolic resistance).
+- After rides/lifts: 20–40 g within a couple of hours; exact timing matters much less than the daily total.
+- Before sleep: 30–40 g (casein or whey work similarly) raises overnight muscle and mitochondrial protein synthesis after endurance exercise; long-term benefit is less certain, so use it when daily protein is short or after evening sessions.
+- Plant-based: soy, pea and blended plant proteins support training gains similar to whey/animal protein when total intake is adequate; eat slightly more and combine sources (legumes + grains, soy, seitan).
+
+### 15c. Carbohydrate: fuel for the work required
+Daily targets scaled to training load:
+| Day | Carbs | Examples |
+|---|---|---|
+| Rest / light (<45 min easy) | 3–5 g/kg | rest day, recovery spin, upper-body lift |
+| Moderate (~1 h, incl. intervals) | 5–7 g/kg | sweet spot, threshold, VO2 session |
+| High (1–3 h) | 6–10 g/kg | long Z2, double days |
+| Very high (>4 h) | 8–12 g/kg | big ride, camp day |
+- Pre-ride: 1–4 g/kg 1–4 h before hard or long sessions (bigger meal further out); a 30–60 g snack 30–60 min before if needed. Easy Z2 under ~90 min can be done fasted if the rider prefers.
+- During rides: <60 min water; 1–2.5 h 30–60 g/h; >2.5 h or hard 60–90 g/h glucose + fructose; 90–120 g/h only with gut training (better durability evidence, performance benefit above 90 g/h not settled). Practice race fueling in training: gut training reduces GI discomfort.
+- Recovery: if the next hard session is <8–12 h away, take 1.0–1.2 g/kg/h carbs for the first ~4 h (or ~0.8 g/kg/h plus 0.3–0.4 g/kg/h protein). Otherwise normal meals are enough.
+- "Train low" (periodized carb restriction) does not by itself improve endurance performance; low-carb/keto diets impair efficiency and high-intensity work in the short term. Use low-carb sessions only for easy rides, never for key intervals, and keep carbs high for hard days and events.
+- Before key sessions/events, reduce fiber and fat in the pre-ride meal to limit GI upset.
+
+### 15d. Fat, micronutrients and food quality
+- Fat ~20–35% of energy, not below ~20%; include oily fish, nuts, olive oil.
+- Iron: fatigue or falling performance → suggest ferritin and hemoglobin testing via a doctor. Supplement (~100 mg elemental iron daily or alternate days) only for diagnosed deficiency, under medical guidance. Pair iron-rich foods with vitamin C.
+- Bone: calcium, vitamin D and enough energy (see §8). Sodium: see §12.
+- Mostly whole foods, plenty of vegetables and fruit, and protein at every meal; supplements fill gaps, they don't replace food.
+
+### 15e. Meal-plan output
+- Before writing a plan, ask about: dietary pattern (omnivore, vegetarian, vegan), allergies or intolerances, foods they enjoy or avoid, cooking time, budget, meal schedule, training time of day, and current weight goal.
+- Plate model: easy/rest days ≈ ½ vegetables, ¼ protein, ¼ starch; hard/long days ≈ ⅓–½ starch, ¼ protein, rest vegetables; add fluids and sodium on sweaty days.
+- Format: a day table — Meal | Time vs session | Foods (portions) | Protein g | Carbs g — with daily totals versus targets. Give approximate macros (label values vary).
+- Plan the day around the session: carbs before, during and after the hard/long work; protein spread evenly; the biggest carb meals near the hardest training.
+- Worked example targets for a 70 kg rider: rest day ~210–350 g carbs, ~125 g protein; interval day ~350–490 g carbs, ~125–140 g protein; 3–4 h ride ~560–700 g carbs (including ~60–90 g/h on the bike); strength + ride day ~350–490 g carbs, ~140–155 g protein.
+- Refer to a registered dietitian for medical conditions (diabetes, kidney disease, GI disorders), food allergies needing a medical diet, pregnancy, or any history of disordered eating.
+
+## 16. Body composition and weight management
+- Pursue W/kg mainly by raising watts. Fat loss is a base/off-season project, never during hard blocks or before events.
+- Rate: ~0.5–1% body mass per week (leaner athletes toward 0.5%). Deficit ≤ ~500 kcal/day: larger deficits impair lean-mass gains and preservation with resistance training (strength is better preserved than muscle).
+- Protein higher in a deficit: ~2.0–2.4 g/kg body mass, or 2.3–3.1 g/kg fat-free mass for lean, strength-trained athletes, scaling up with leanness and size of deficit.
+- Keep heavy strength training going (maintain or increase volume) to spare lean mass; keep the key bike sessions.
+- Where to take the deficit: rest and easy days, fats and low-nutrient snacks. Keep carbs around key sessions and fuel during rides as usual.
+- Time-restricted eating (e.g., an 8-h window) produced weight loss and improved power-to-weight in elite cyclists without hurting performance. It can work if it fits the schedule, but keep pre/during/post-ride fueling, don't do hard sessions fasted, and avoid it during muscle-gain phases (lower training volume and strength gains were reported).
+- Diet breaks/refeeds: no clear body-composition advantage over continuous dieting; use them for adherence and recovery if helpful.
+- Monitoring: daily morning weigh-in, judge the 7-day average; waist measurement; performance and readiness. If the 2-week trend is off target, adjust ~150–250 kcal/day.
+- Muscle-gain phase (strength focus): small surplus ~200–300 kcal/day, protein 1.6–2.2 g/kg; time it for off-season or lower-volume cycling.
+- After a diet: energy restriction lowers RMR, thyroid hormones, mood and sleep quality; return to maintenance in steps and hold it.
+- Stop and refer to a doctor or registered dietitian if: performance falls, illness or injuries increase, low libido, missed periods, persistent fatigue, dizziness, or obsessive or restrictive food behavior.
 
 ## 17. Supplements (evidence-graded)
 - Caffeine (strong): ~3 mg/kg 45–60 min pre key sessions/events; test in training.
@@ -216,6 +265,34 @@ Cadence & fit
 - Cycling medicine clinic, 9-year injury data (2026): https://doi.org/10.1249/JSR.0000000000001345
 - Physio-led bike fit and knee pain (2025): https://doi.org/10.1080/09593985.2025.2468908
 - Kinematics and anterior knee pain (2022): https://doi.org/10.1123/jsr.2021-0233
+Sports nutrition
+- ISSN position stand: protein and exercise (2017): https://doi.org/10.1186/s12970-017-0177-8
+- ISSN position stand: nutrient timing (2017): https://doi.org/10.1186/s12970-017-0189-4
+- Protein intake, lean mass and strength meta-analysis (2022): https://doi.org/10.1002/jcsm.12922
+- Protein timing and body composition meta-analysis (2020): https://doi.org/10.1093/jn/nxaa049
+- Protein requirements in endurance athletes (IAAO, 2016): https://doi.org/10.1371/journal.pone.0157406
+- Protein requirement after endurance exercise (IAAO, 2019): https://doi.org/10.1152/ajpendo.00174.2018
+- IAAO protein requirements scoping review (2023): https://doi.org/10.1016/j.tjnut.2023.07.015
+- Pre-sleep protein after endurance exercise RCT (2023): https://doi.org/10.1007/s40279-023-01822-3
+- Pre-sleep protein systematic review (2020): https://doi.org/10.1016/j.jsams.2020.07.016
+- Animal vs plant protein meta-analysis (2021): https://doi.org/10.3390/nu13020661
+- Plant vs animal protein blend RCT (2025): https://doi.org/10.1080/15502783.2025.2568047
+- Plant protein vs whey meta-analysis (2026): https://doi.org/10.1080/15502783.2026.2752317
+- Anabolic resistance and per-meal protein (2018): https://doi.org/10.1097/MCC.0000000000000488
+- Periodized carbohydrate restriction meta-analysis (2021): https://doi.org/10.1186/s12970-021-00435-3
+- Low-carb/ketogenic diets and aerobic performance meta-analysis (2026): https://doi.org/10.3390/nu18050740
+- Post-exercise recovery nutrition review (2025): https://doi.org/10.1007/s40279-025-02213-6
+- Gut training systematic review (2023): https://doi.org/10.1007/s40279-023-01841-0
+- GI symptoms nutrition strategies review (2025): https://doi.org/10.1080/15502783.2025.2529910
+- Iron deficiency and supplementation in female athletes (2024): https://doi.org/10.1016/j.jshs.2024.101009
+- Low energy availability in male endurance athletes (2023): https://doi.org/10.4081/ejtm.2023.11104
+- Energy deficit and resistance training gains meta-analysis (2021): https://doi.org/10.1111/sms.14075
+- Protein during caloric restriction in lean athletes (2014): https://doi.org/10.1123/ijsnem.2013-0054
+- Training volume and lean mass sparing during caloric restriction (2022): https://doi.org/10.1007/s00421-022-04896-5
+- Time-restricted eating in elite cyclists RCT (2020): https://doi.org/10.1186/s12970-020-00396-z
+- Hypercaloric 16:8 eating with resistance training (2025): https://doi.org/10.1080/15502783.2025.2492184
+- Intermittent energy restriction reanalysis (2020): https://doi.org/10.3390/jfmk5040085
+- ISSN position stand: female athlete nutrition (2023): https://doi.org/10.1080/15502783.2023.2204066
 Nutrition, weight & supplements
 - Carbohydrate fueling, ketones, REDs review (2026): https://doi.org/10.1177/19417381261499157
 - Energy restriction monitoring (2026): https://doi.org/10.1007/s40279-026-02509-1

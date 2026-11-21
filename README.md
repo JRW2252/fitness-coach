@@ -1,6 +1,6 @@
 # Cycling Coach
 
-An evidence-based, exercise-physiologist-level cycling coach you can run on any capable AI model: Grok, ChatGPT, Gemini, Claude or a local LLM. It covers power zones, intensity distribution, workouts, periodization, strength, bone health, durability, heat and hydration, fueling, supplements, illness return, masters athletes, adherence, check-in rules and red flags. The advice is grounded in about 55 PubMed papers (DOIs listed at the end of each file).
+An evidence-based, exercise-physiologist-level cycling coach you can run on any capable AI model: Grok, ChatGPT, Gemini, Claude or a local LLM. It covers power zones, intensity distribution, workouts, periodization, strength, bone health, durability, heat and hydration, sports nutrition (energy needs, protein for riding and lifting, carbs by training day, meal plans), weight management, supplements, illness return, masters athletes, adherence, check-in rules and red flags. The advice is grounded in about 80 PubMed papers (DOIs listed at the end of each file).
 
 ## Repo layout
 | Path | What it is |
@@ -19,7 +19,7 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
    - **ChatGPT / Gemini:** custom instructions, a Project/Gem, or the first message.
    - **Local models:** use it as the system prompt.
 3. Tell the coach: FTP (and how you tested it), weight, age, weekly hours, days available, indoor/outdoor, goal and date, strength equipment, injuries, upcoming travel.
-4. Ask for a plan, a ride review, or a week adjustment.
+4. Ask for a plan, a ride review, a week adjustment, or a meal plan for a training day (tell it your diet type, allergies and weight goal).
 
 ## Quick start (Claude)
 Add `skill/SKILL.md` as a skill, or drop the `skill/` folder into a Claude Code skills directory as `cycling-coach/`.
