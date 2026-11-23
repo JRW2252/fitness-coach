@@ -13,6 +13,7 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
 | `workout-sync/` | **intervals.icu + Zwift workout sync.** First-run checklist, a guide to writing workout files, a file validator, an upload helper, and bot prompt templates for pushing your own workouts to Zwift and other connected apps. Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md). |
 | `index.html` | **Zone 2 Dash**, a silly cycling endless-runner game. One self-contained file, no dependencies. [Play it online](https://jrw2252.github.io/fitness-coach/) or open the file in a browser. |
 | `evals/` | **Evals** ([results](evals/RESULTS.md)). 38 test cases plus a runner that checks whether a model loaded with the coach follows the spec (safety red flags, zone and nutrition numbers, training rules, output formats). Works with Claude, Grok, ChatGPT, Gemini and local models. See [`evals/README.md`](evals/README.md). |
+| `CLAUDE.md`, `HANDOFF.md` | Conventions and current status for working on the repo with Claude Code. |
 | `SECURITY.md` | How to report a vulnerability, what is in scope, and what to do if a key or personal data is committed. |
 
 ## Quick start (Grok or any other model)
