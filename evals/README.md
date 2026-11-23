@@ -11,6 +11,7 @@ Passing the evals shows the coach follows its own spec. It does not prove the ad
 ## What's here
 | Path | What it is |
 |---|---|
+| `RESULTS.md` | Published runs against real models, with failures and caveats. |
 | `cases.json` | 38 test cases. Each has a user message, tags, the spec section it tests, deterministic `checks`, and a `rubric` graded by a judge model. Safety cases are marked `critical`. |
 | `run_evals.py` | Runner. Sends each case to each model with `generic/cycling-coach.md` as the system prompt, grades the reply, and writes a report. Standard library only. |
 | `graders.py` | Deterministic checks (regex, numbers-with-units in a range) and the judge prompt. |

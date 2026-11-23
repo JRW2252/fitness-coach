@@ -1,5 +1,7 @@
 # Cycling Coach
 
+[![Coach evals](https://github.com/JRW2252/fitness-coach/actions/workflows/evals.yml/badge.svg)](https://github.com/JRW2252/fitness-coach/actions/workflows/evals.yml) ![Grok 4.7 eval pass rate](https://img.shields.io/badge/Grok_4.7_evals-98%25-brightgreen) ![Safety cases](https://img.shields.io/badge/safety_cases-33%2F33-brightgreen)
+
 An evidence-based, exercise-physiologist-level cycling coach you can run on any capable AI model: Grok, ChatGPT, Gemini, Claude or a local LLM. It covers power zones, intensity distribution, workouts, periodization, strength, bone health, durability, heat and hydration, sports nutrition (energy needs, protein for riding and lifting, carbs by training day, meal plans), weight management, supplements, illness return, masters athletes, adherence, check-in rules and red flags. The advice is grounded in about 80 PubMed papers (DOIs listed at the end of each file).
 
 ## Repo layout
@@ -10,7 +12,7 @@ An evidence-based, exercise-physiologist-level cycling coach you can run on any 
 | `tracker/TRACKER.md` | Layout and formulas for the daily / session / weekly / test check-in spreadsheet the coach uses to adapt your plan. |
 | `workout-sync/` | **intervals.icu + Zwift workout sync.** First-run checklist, a guide to writing workout files, a file validator, an upload helper, and bot prompt templates for pushing your own workouts to Zwift and other connected apps. Start at [`workout-sync/QUICKSTART.md`](workout-sync/QUICKSTART.md). |
 | `index.html` | **Zone 2 Dash**, a silly cycling endless-runner game. One self-contained file, no dependencies. [Play it online](https://jrw2252.github.io/fitness-coach/) or open the file in a browser. |
-| `evals/` | **Evals.** 38 test cases plus a runner that checks whether a model loaded with the coach follows the spec (safety red flags, zone and nutrition numbers, training rules, output formats). Works with Claude, Grok, ChatGPT, Gemini and local models. See [`evals/README.md`](evals/README.md). |
+| `evals/` | **Evals** ([results](evals/RESULTS.md)). 38 test cases plus a runner that checks whether a model loaded with the coach follows the spec (safety red flags, zone and nutrition numbers, training rules, output formats). Works with Claude, Grok, ChatGPT, Gemini and local models. See [`evals/README.md`](evals/README.md). |
 | `SECURITY.md` | How to report a vulnerability, what is in scope, and what to do if a key or personal data is committed. |
 
 ## Quick start (Grok or any other model)
@@ -46,6 +48,14 @@ How it fits together:
 The API key lives only in the environment variable `INTERVALS_ICU_API_KEY`; the scripts never print it or put it on a command line. This is an implementation of the check-in loop above, not a replacement for it, and you can run it with an AI assistant or by hand. Keep API keys, athlete ids and personal logs out of the public repo.
 
 ## Testing the coach
+The coach is tested with 38 eval cases covering safety red flags, zone and nutrition numbers, training rules, readiness and output formats.
+
+| Model | Pass rate | Safety cases | Run |
+|---|---|---|---|
+| Grok 4.7 | **98%** (112/114) | 33/33 | 2026-11-23, 3 runs per case |
+
+Full breakdown, failures and caveats (including that Grok graded its own replies in this run) are in [`evals/RESULTS.md`](evals/RESULTS.md).
+
 Run `python3 -m unittest discover -s evals/tests` for the offline self-test, and `python3 evals/run_evals.py --model <provider:model> --judge <provider:model>` to score real models. Details in [`evals/README.md`](evals/README.md). When you change a number or rule in the coach files, update the matching eval cases in the same PR.
 
 ## Keeping the two copies in sync
