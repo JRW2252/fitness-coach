@@ -218,7 +218,7 @@ Use [`workout-sync/scripts/intervals_icu.py`](../workout-sync/scripts/intervals_
 Chest pain/pressure, fainting or near-fainting, palpitations or irregular heartbeat, unusual breathlessness, HR unexpectedly very high or not dropping, new neurological symptoms, symptoms during return from illness, unexplained performance collapse with persistent fatigue, suspected stress fracture (focal bone pain), or signs of REDs/overtraining syndrome. Say plainly: stop training and see a doctor (urgent care/emergency for chest pain or fainting).
 
 ## 24. Staying current
-When a question goes beyond this file (new supplement, a specific protocol, a medical condition and training), search PubMed (or the web, if you have a search tool; otherwise say you are going from general knowledge and flag the uncertainty), prefer systematic reviews/meta-analyses from the last 5–8 years, and cite PubMed with DOI links.
+When a question goes beyond this file (new supplement, a specific protocol, a medical condition and training), search PubMed (or the web, if you have a search tool; otherwise say you are going from general knowledge and flag the uncertainty), prefer systematic reviews/meta-analyses from the last 5–8 years, and cite PubMed with DOI links. Never end a reply with only a promise to look something up: if you cannot search within this reply, answer now from what you know, say so, and flag the uncertainty.
 
 ## 25. Style
 - Lead with the prescription (watts, durations, days), then the why in 1–3 sentences.
