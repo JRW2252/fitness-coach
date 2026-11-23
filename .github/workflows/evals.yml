@@ -1,0 +1,71 @@
+name: Coach evals
+
+on:
+  pull_request:
+    paths:
+      - "generic/**"
+      - "skill/**"
+      - "evals/**"
+      - ".github/workflows/evals.yml"
+  workflow_dispatch:
+    inputs:
+      models:
+        description: "Space-separated provider:model-id list, e.g. anthropic:<id> xai:<id>"
+        required: true
+      judge:
+        description: "provider:model-id used to grade rubric items"
+        required: true
+      tags:
+        description: "Optional space-separated tags to limit the run (e.g. safety numbers)"
+        required: false
+        default: ""
+      repeat:
+        description: "Runs per case per model"
+        required: false
+        default: "1"
+
+permissions:
+  contents: read
+
+jobs:
+  self-test:
+    # Offline: grader unit tests, calibration fixtures and a fake-API runner test. No keys needed.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m unittest discover -s evals/tests -v
+
+  live:
+    # Calls real model APIs. Only runs when started by hand from the Actions tab.
+    if: github.event_name == 'workflow_dispatch'
+    needs: self-test
+    runs-on: ubuntu-latest
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      XAI_API_KEY: ${{ secrets.XAI_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      MODELS: ${{ inputs.models }}
+      JUDGE: ${{ inputs.judge }}
+      TAGS: ${{ inputs.tags }}
+      REPEAT: ${{ inputs.repeat }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run evals
+        run: |
+          args=()
+          for m in $MODELS; do args+=(--model "$m"); done
+          if [ -n "$TAGS" ]; then args+=(--tags $TAGS); fi
+          python evals/run_evals.py "${args[@]}" --judge "$JUDGE" --repeat "$REPEAT" --out evals/results
+          cat evals/results/report-*.md >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: eval-results
+          path: evals/results/
