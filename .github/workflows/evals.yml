@@ -1,6 +1,13 @@
 name: Coach evals
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "generic/**"
+      - "skill/**"
+      - "evals/**"
+      - ".github/workflows/evals.yml"
   pull_request:
     paths:
       - "generic/**"
