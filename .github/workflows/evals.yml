@@ -10,11 +10,13 @@ on:
   workflow_dispatch:
     inputs:
       models:
-        description: "Space-separated provider:model-id list, e.g. anthropic:<id> xai:<id>"
+        description: "Space-separated provider:model-id list (check exact ids in each provider's console)"
         required: true
+        default: "xai:grok-4.7"
       judge:
-        description: "provider:model-id used to grade rubric items"
+        description: "provider:model-id used to grade rubric items (a different provider avoids self-grading bias)"
         required: true
+        default: "xai:grok-4.7"
       tags:
         description: "Optional space-separated tags to limit the run (e.g. safety numbers)"
         required: false
@@ -22,7 +24,7 @@ on:
       repeat:
         description: "Runs per case per model"
         required: false
-        default: "1"
+        default: "3"
 
 permissions:
   contents: read
@@ -62,7 +64,7 @@ jobs:
           args=()
           for m in $MODELS; do args+=(--model "$m"); done
           if [ -n "$TAGS" ]; then args+=(--tags $TAGS); fi
-          python evals/run_evals.py "${args[@]}" --judge "$JUDGE" --repeat "$REPEAT" --out evals/results
+          python evals/run_evals.py "${args[@]}" --judge "$JUDGE" --repeat "$REPEAT" --max-tokens 4000 --out evals/results
           cat evals/results/report-*.md >> "$GITHUB_STEP_SUMMARY"
       - uses: actions/upload-artifact@v4
         if: always()
